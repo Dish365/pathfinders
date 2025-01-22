@@ -1,10 +1,12 @@
 import httpx
 from django.conf import settings
 from typing import Dict, Any
+import os
 
 class FastAPIClient:
     def __init__(self):
-        self.base_url = "http://localhost:8001/calculate-gifts/"
+        self.base_url = os.getenv('FASTAPI_URL', 'http://localhost:8001')
+        self.timeout = 30.0  # Add timeout for production
         
     def calculate_gifts_sync(self, data):
         """Synchronous request to FastAPI calculate-gifts endpoint"""
@@ -41,17 +43,11 @@ class FastAPIClient:
         async with httpx.AsyncClient() as client:
             try:
                 response = await client.post(
-                    self.base_url,
-                    json={
-                        'user_id': data.get('user_id'),
-                        'answers': [
-                            {
-                                'question_id': answer['question_id'],
-                                'answer': answer['answer'],
-                                'gift_correlation': answer['gift_correlation']
-                            }
-                            for answer in data['answers']
-                        ]
+                    f"{self.base_url}/calculate-gifts/",
+                    json=data,
+                    timeout=self.timeout,
+                    headers={
+                        'X-API-Key': os.getenv('API_KEY'),  # Add API key for security
                     }
                 )
                 response.raise_for_status()

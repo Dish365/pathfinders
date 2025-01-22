@@ -10,17 +10,24 @@ from .models import (
 from assessments.gift_calculator import GiftCalculator
 import httpx
 from typing import List
+import os
 
 app = FastAPI(title="Pathfinders Gift Assessment API")
 
-# CORS configuration
+# CORS configuration for production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "https://pathfindersgifts.com",
+        "https://www.pathfindersgifts.com",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Update the httpx client calls to use environment variables
+DJANGO_API_URL = os.getenv('DJANGO_API_URL', 'http://localhost:8000')
 
 calculator = GiftCalculator()
 
@@ -93,8 +100,9 @@ async def save_progress(progress: ProgressData):
     """
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            "http://localhost:8000/api/assessments/save-progress/",
-            json=progress.dict()
+            f"{DJANGO_API_URL}/api/assessments/save-progress/",
+            json=progress.dict(),
+            timeout=30.0  # Add timeout for production
         )
         return response.json()
 
