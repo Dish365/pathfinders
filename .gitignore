@@ -68,3 +68,18 @@ wheels/
 *.egg
 .coverage
 htmlcov/
+
+# Next.js
+pathfinders-client/.next/
+pathfinders-client/node_modules/
+pathfinders-client/.env*
+
+# Python
+__pycache__/
+*.pyc
+.env
+venv/
+
+# IDE
+.vscode/
+.idea/
