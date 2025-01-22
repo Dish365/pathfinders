@@ -1,0 +1,1276 @@
+{
+  "book": {
+    "title": "The Gift of Exhortation",
+    "subtitle": "Pathfinders Guidance Series",
+    "associated_gift": "EXHORTATION",
+    "publication_info": {
+      "publisher": "Pathfinders Educational Trust",
+      "authors": "Don and Katie, and Farr and Shatkin",
+      "source": "New guide for Occupational Exploration",
+      "target_audience": "youth of Ghana"
+    },
+    "copyright_info": "The authors and Pathfinders (PET) do make no representations or warranties with respect to the accuracy or completeness of the contents of this booklet. We wish to specifically disclaim all warranties, including without limitation warranties of fitness for a particular purpose.",
+    "version": "1.0",
+    "categories": [
+      {
+        "order": 1,
+        "title": "Agriculture and Natural Resources",
+        "description": "With scientific curiosity in this field, one can work or study in the area of farming, fishing, mining, landscaping, forestry and other related areas. If you have management ability, you can pursue business in these fields.",
+        "careers": [
+          {
+            "title": "Conservationist",
+            "possibility_rating": "VP",
+            "order": 1
+          },
+          {
+            "title": "Forest Conservation Technician",
+            "possibility_rating": "VP",
+            "order": 2
+          },
+          {
+            "title": "Landscaper",
+            "possibility_rating": "VP",
+            "order": 3
+          },
+          {
+            "title": "Botanist",
+            "possibility_rating": "P",
+            "order": 4
+          },
+          {
+            "title": "Fisherman",
+            "possibility_rating": "P",
+            "order": 5
+          },
+          {
+            "title": "Forest ranger",
+            "possibility_rating": "P",
+            "order": 6
+          },
+          {
+            "title": "Geographer",
+            "possibility_rating": "P",
+            "order": 7
+          }
+        ]
+      },
+      {
+        "order": 2,
+        "title": "Architecture and Building Construction",
+        "description": "With the ability to organize and plan, create and fix hardware, you can work as an architect, draftsman, plumber, carpenter, mason, painter, electrician and other areas related to designing, assembling and maintaining components of buildings and other structures.",
+        "careers": [
+          {
+            "title": "Contractor",
+            "possibility_rating": "VP",
+            "order": 1,
+            "specializations": [
+              {
+                "title": "Foreman",
+                "order": 1
+              },
+              {
+                "title": "Construction Trades Worker",
+                "order": 2
+              },
+              {
+                "title": "Prefabricated Home and Structure Installer",
+                "order": 3
+              }
+            ]
+          },
+          {
+            "title": "Carpenter",
+            "possibility_rating": "P",
+            "order": 2
+          },
+          {
+            "title": "Electrician",
+            "possibility_rating": "P",
+            "order": 3
+          },
+          {
+            "title": "Mason",
+            "possibility_rating": "P",
+            "order": 4
+          }
+        ]
+      },
+      {
+        "order": 3,
+        "title": "Art and Communication",
+        "description": "Do you love to creatively express your feelings or ideas, communicate news or information and perform? Writing, editing, journalism, public relations, acting, music or dance, painting, sculpture, ceramics or design products or visual displays, photography, broadcast production or dispatching are the career areas for you.",
+        "careers": [
+          {
+            "title": "Advertising Executive",
+            "possibility_rating": "HP",
+            "order": 1
+          },
+          {
+            "title": "Auctioneer",
+            "possibility_rating": "HP",
+            "order": 2
+          },
+          {
+            "title": "Public Relations Officer",
+            "possibility_rating": "HP",
+            "order": 3
+          },
+          {
+            "title": "Radio/TV Announcer",
+            "possibility_rating": "HP",
+            "order": 4
+          },
+          {
+            "title": "Reporter",
+            "possibility_rating": "VP",
+            "order": 5
+          },
+          {
+            "title": "Radio/TV Producer",
+            "possibility_rating": "VP",
+            "order": 6
+          },
+          {
+            "title": "Performing Artist",
+            "possibility_rating": "VP",
+            "order": 7
+          },
+          {
+            "title": "Writer",
+            "possibility_rating": "VP",
+            "order": 8,
+            "specializations": [
+              {
+                "title": "Copy Writer",
+                "order": 1
+              },
+              {
+                "title": "Creative Writer",
+                "order": 2
+              },
+              {
+                "title": "Technical Writer",
+                "order": 3
+              },
+              {
+                "title": "Poet and Lyricist",
+                "order": 4
+              }
+            ]
+          },
+          {
+            "title": "Conductor (Music)",
+            "possibility_rating": "P",
+            "order": 9
+          },
+          {
+            "title": "Commercial Artist",
+            "possibility_rating": "P",
+            "order": 10,
+            "specializations": [
+              {
+                "title": "Commercial and Industrial Designer",
+                "order": 1
+              },
+              {
+                "title": "Exhibit Designer",
+                "order": 2
+              },
+              {
+                "title": "Merchandise Displayers",
+                "order": 3
+              },
+              {
+                "title": "Set Designer",
+                "order": 4
+              },
+              {
+                "title": "Metal Product Designer",
+                "order": 5
+              },
+              {
+                "title": "Make-up Artist (Theatrical and Performance)",
+                "order": 6
+              }
+            ]
+          },
+          {
+            "title": "Fashion designer",
+            "possibility_rating": "P",
+            "order": 11
+          },
+          {
+            "title": "Florist",
+            "possibility_rating": "P",
+            "order": 12
+          },
+          {
+            "title": "Interior Decorator",
+            "possibility_rating": "P",
+            "order": 13
+          }
+        ]
+      },
+      {
+        "order": 4,
+        "title": "Business and Administration",
+        "description": "You love to see a business organization function smoothly, to work with others, or have an interest in numbers, you can work with an NGO or government agency. Human resources, accounting, finance, budgeting and financial record keeping and related areas are possible career areas for you.",
+        "careers": [
+          {
+            "title": "Personnel Manager",
+            "possibility_rating": "HP",
+            "order": 1,
+            "specializations": [
+              {
+                "title": "Human Resource Manager",
+                "order": 1
+              },
+              {
+                "title": "Personnel Recruiter",
+                "order": 2
+              }
+            ]
+          },
+          {
+            "title": "Training and Development Specialist",
+            "possibility_rating": "HP",
+            "order": 2
+          },
+          {
+            "title": "Receptionist",
+            "possibility_rating": "HP",
+            "order": 3
+          },
+          {
+            "title": "Business Owner",
+            "possibility_rating": "VP",
+            "order": 4
+          },
+          {
+            "title": "Dept. Store Manager",
+            "possibility_rating": "VP",
+            "order": 5
+          },
+          {
+            "title": "Hospital Administrator",
+            "possibility_rating": "VP",
+            "order": 6
+          },
+          {
+            "title": "Marketing Executive",
+            "possibility_rating": "VP",
+            "order": 7
+          },
+          {
+            "title": "Post man",
+            "possibility_rating": "VP",
+            "order": 8
+          },
+          {
+            "title": "Business consultant",
+            "possibility_rating": "P",
+            "order": 9
+          },
+          {
+            "title": "Buyer",
+            "possibility_rating": "P",
+            "order": 10
+          },
+          {
+            "title": "Clerk",
+            "possibility_rating": "P",
+            "order": 11
+          }
+        ]
+      },
+      {
+        "order": 5,
+        "title": "Education and Training",
+        "description": "You love to teach other people. You can specialize in a particular academic area and choose a particular student group, such as children, youth, retirees and the physically challenged. You can also work in a library, museum where you would help others to expand people's understanding of the world.",
+        "careers": [
+          {
+            "title": "Religious Education Director",
+            "possibility_rating": "HP",
+            "order": 1
+          },
+          {
+            "title": "Teacher (Physical Education)",
+            "possibility_rating": "HP",
+            "order": 2
+          },
+          {
+            "title": "Teacher (Special Education)",
+            "possibility_rating": "HP",
+            "order": 3
+          },
+          {
+            "title": "Teacher (Social Studies)",
+            "possibility_rating": "HP",
+            "order": 4
+          },
+          {
+            "title": "College Professor",
+            "possibility_rating": "VP",
+            "order": 5,
+            "specializations": [
+              {
+                "title": "Instructor (Remedial Education)",
+                "order": 1
+              },
+              {
+                "title": "Cultural Studies Teacher (Postsecondary/Tertiary)",
+                "order": 2
+              },
+              {
+                "title": "Art Teacher (Postsecondary/Tertiary)",
+                "order": 3
+              },
+              {
+                "title": "Drama Teacher (Postsecondary/Tertiary)",
+                "order": 4
+              },
+              {
+                "title": "Music Teacher (Postsecondary/Tertiary)",
+                "order": 5
+              },
+              {
+                "title": "Physical Science Teacher (Postsecondary/Tertiary)",
+                "order": 6
+              },
+              {
+                "title": "Biological Science Teacher (Postsecondary/Tertiary)",
+                "order": 7
+              },
+              {
+                "title": "Business Teacher (Postsecondary/Tertiary)",
+                "order": 8
+              },
+              {
+                "title": "Chemistry Teacher (Postsecondary/Tertiary)",
+                "order": 9
+              },
+              {
+                "title": "Computer Science Teacher (Postsecondary/Tertiary)",
+                "order": 10
+              },
+              {
+                "title": "Communications Teacher (Postsecondary/Tertiary)",
+                "order": 11
+              },
+              {
+                "title": "Economics Teacher (Postsecondary/Tertiary)",
+                "order": 12
+              },
+              {
+                "title": "Education Teacher (Postsecondary/Tertiary)",
+                "order": 13
+              },
+              {
+                "title": "Engineering Teacher (Postsecondary/Tertiary)",
+                "order": 14
+              },
+              {
+                "title": "English Language And Literature Teacher (Postsecondary/Tertiary)",
+                "order": 15
+              },
+              {
+                "title": "Environmental Science Teacher (Postsecondary/Tertiary)",
+                "order": 16
+              },
+              {
+                "title": "Foreign Language and Literature (Postsecondary/Tertiary)",
+                "order": 17
+              },
+              {
+                "title": "Forestry and Conservation Science Teacher (Postsecondary/Tertiary)",
+                "order": 18
+              },
+              {
+                "title": "Geography Teacher (Postsecondary/Tertiary)",
+                "order": 19
+              },
+              {
+                "title": "Health Science Teacher (Postsecondary/Tertiary)",
+                "order": 20
+              },
+              {
+                "title": "History Teacher (Postsecondary/Tertiary)",
+                "order": 21
+              },
+              {
+                "title": "Food Science/Home Economics Teacher (Postsecondary/Tertiary)",
+                "order": 22
+              },
+              {
+                "title": "Law Teacher (Postsecondary/Tertiary)",
+                "order": 23
+              },
+              {
+                "title": "Mathematical Science Teacher (Postsecondary/Tertiary)",
+                "order": 24
+              },
+              {
+                "title": "Medical Science Teacher (Tertiary)",
+                "order": 25
+              },
+              {
+                "title": "Nursing Instructor and Teacher (Postsecondary/Tertiary)",
+                "order": 26
+              },
+              {
+                "title": "Philosophy and Religion Teacher (Postsecondary/Tertiary)",
+                "order": 27
+              },
+              {
+                "title": "Physics Teacher (Postsecondary/Tertiary)",
+                "order": 28
+              },
+              {
+                "title": "Political Science Teacher (Postsecondary/Tertiary)",
+                "order": 29
+              },
+              {
+                "title": "Psychology Teacher (Postsecondary/Tertiary)",
+                "order": 30
+              },
+              {
+                "title": "Social Work Teacher (Postsecondary/Tertiary)",
+                "order": 31
+              },
+              {
+                "title": "Sociology Teacher (Postsecondary/Tertiary)",
+                "order": 32
+              }
+            ]
+          },
+          {
+            "title": "Teacher (Business Education)",
+            "possibility_rating": "VP",
+            "order": 6
+          },
+          {
+            "title": "Teacher (Drama)",
+            "possibility_rating": "VP",
+            "order": 7
+          },
+          {
+            "title": "Teacher (Elementary)",
+            "possibility_rating": "VP",
+            "order": 8,
+            "specializations": [
+              {
+                "title": "Kindergarten Teacher",
+                "order": 1
+              },
+              {
+                "title": "Junior High School Teacher",
+                "order": 2
+              },
+              {
+                "title": "Preschool Teacher",
+                "order": 3
+              },
+              {
+                "title": "Special Education Teacher, Junior High School",
+                "order": 4
+              },
+              {
+                "title": "Special Education Teacher, Preschool, Kindergarten and Elementary School",
+                "order": 5
+              }
+            ]
+          },
+          {
+            "title": "Teacher (Home Economics)",
+            "possibility_rating": "VP",
+            "order": 9
+          },
+          {
+            "title": "Teacher (History)",
+            "possibility_rating": "VP",
+            "order": 10,
+            "specializations": [
+              {
+                "title": "Teaching Assistant",
+                "order": 1
+              }
+            ]
+          },
+          {
+            "title": "Librarian",
+            "possibility_rating": "P",
+            "order": 11,
+            "specializations": [
+              {
+                "title": "Library Science Teacher (Postsecondary/Tertiary)",
+                "order": 1
+              },
+              {
+                "title": "Librarian Assistant",
+                "order": 2
+              },
+              {
+                "title": "Library Technician",
+                "order": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "order": 6,
+        "title": "Finance and Insurance",
+        "description": "Your greatest desire is to ensure that businesses have financial security. To find satisfaction, you can play a managerial role in this field. If you like gathering and analyzing information, you can work as a financial analyst or insurance adjuster, banker, insurance agent or customer care provider.",
+        "careers": [
+          {
+            "title": "Investment Fund Manager",
+            "possibility_rating": "VP",
+            "order": 1
+          },
+          {
+            "title": "Life Insurance Agent",
+            "possibility_rating": "VP",
+            "order": 2,
+            "specializations": [
+              {
+                "title": "Advertising Sales Agent",
+                "order": 1
+              },
+              {
+                "title": "Insurance Sales Agent",
+                "order": 2
+              },
+              {
+                "title": "Personal Financial Advisor",
+                "order": 3
+              },
+              {
+                "title": "Sales Agent, Financial Services",
+                "order": 4
+              },
+              {
+                "title": "Sales Agent, Securities and Commodities",
+                "order": 5
+              }
+            ]
+          },
+          {
+            "title": "Market Researcher/Analyst",
+            "possibility_rating": "VP",
+            "order": 3,
+            "specializations": [
+              {
+                "title": "Appraiser, Real Estate",
+                "order": 1
+              },
+              {
+                "title": "Assessor",
+                "order": 2
+              },
+              {
+                "title": "Cost Estimator",
+                "order": 3
+              },
+              {
+                "title": "Credit Analyst",
+                "order": 4
+              },
+              {
+                "title": "Financial Analyst",
+                "order": 5
+              },
+              {
+                "title": "Insurance Adjuster, Examiner and Investigator",
+                "order": 6
+              },
+              {
+                "title": "Insurance Appraiser, Auto Damage",
+                "order": 7
+              },
+              {
+                "title": "Insurance Underwriter",
+                "order": 8
+              },
+              {
+                "title": "Loan Counselor",
+                "order": 9
+              },
+              {
+                "title": "Loan Officer",
+                "order": 10
+              },
+              {
+                "title": "Market Research Analyst",
+                "order": 11
+              },
+              {
+                "title": "Survey Researcher",
+                "order": 12
+              }
+            ]
+          },
+          {
+            "title": "Auditor",
+            "possibility_rating": "P",
+            "order": 4
+          },
+          {
+            "title": "Bank teller",
+            "possibility_rating": "P",
+            "order": 5
+          },
+          {
+            "title": "Banker",
+            "possibility_rating": "P",
+            "order": 6
+          },
+          {
+            "title": "Cashier/Checker",
+            "possibility_rating": "P",
+            "order": 7
+          }
+        ]
+      },
+      {
+        "order": 7,
+        "title": "Government and Public Administration",
+        "description": "Do you want to help government provide the needs of the public? You can serve in such areas that contribute to the role of government: public protection, law enforcement, clerical services and development planning, public sector management and related areas.",
+        "careers": [
+          {
+            "title": "Ambassador",
+            "possibility_rating": "HP",
+            "order": 1
+          },
+          {
+            "title": "Planning Officer",
+            "possibility_rating": "VP",
+            "order": 2,
+            "specializations": [
+              {
+                "title": "Urban Rural Planner",
+                "order": 1
+              }
+            ]
+          },
+          {
+            "title": "Civil Servant",
+            "possibility_rating": "VP",
+            "order": 3
+          },
+          {
+            "title": "Politician",
+            "possibility_rating": "VP",
+            "order": 4
+          },
+          {
+            "title": "Public administrator",
+            "possibility_rating": "VP",
+            "order": 5
+          },
+          {
+            "title": "Clerk",
+            "possibility_rating": "P",
+            "order": 6,
+            "specializations": [
+              {
+                "title": "Court Clerk",
+                "order": 1
+              },
+              {
+                "title": "Court Reporter",
+                "order": 2
+              },
+              {
+                "title": "License Clerk",
+                "order": 3
+              },
+              {
+                "title": "Municipal Clerk",
+                "order": 4
+              }
+            ]
+          },
+          {
+            "title": "Inspector",
+            "possibility_rating": "P",
+            "order": 7
+          }
+        ]
+      },
+      {
+        "order": 8,
+        "title": "Health Science",
+        "description": "You love to provide healthcare needs of people and animals. You can work as a Doctor, specializing in a particular part of the body or be a generalist, a therapist, or nurse. With an interest in technology, X-rays and new methods of diagnosis are possible career areas.",
+        "careers": [
+          {
+            "title": "Occupational Therapist",
+            "possibility_rating": "HP",
+            "order": 1
+          },
+          {
+            "title": "Psychologist",
+            "possibility_rating": "HP",
+            "order": 2
+          },
+          {
+            "title": "Speech Therapist",
+            "possibility_rating": "HP",
+            "order": 3
+          },
+          {
+            "title": "Dentist",
+            "possibility_rating": "VP",
+            "order": 4,
+            "specializations": [
+              {
+                "title": "Oral and Maxillofacial Surgeon",
+                "order": 1
+              },
+              {
+                "title": "Orthodontist",
+                "order": 2
+              },
+              {
+                "title": "Prosthodontist",
+                "order": 3
+              }
+            ]
+          },
+          {
+            "title": "Dietician",
+            "possibility_rating": "VP",
+            "order": 5
+          },
+          {
+            "title": "Doctor",
+            "possibility_rating": "VP",
+            "order": 6
+          },
+          {
+            "title": "Licensed Practical Nurse",
+            "possibility_rating": "VP",
+            "order": 7
+          },
+          {
+            "title": "Medical Technologist",
+            "possibility_rating": "VP",
+            "order": 8,
+            "specializations": [
+              {
+                "title": "Biological Technician",
+                "order": 1
+              },
+              {
+                "title": "Cardiovascular Technologist/Perfusionist",
+                "order": 2
+              },
+              {
+                "title": "Cardiovascular Technician",
+                "order": 3
+              },
+              {
+                "title": "Medical Laboratory Technician",
+                "order": 4
+              },
+              {
+                "title": "Clinical Laboratory Technician",
+                "order": 5
+              },
+              {
+                "title": "Medical Laboratory Technologist",
+                "order": 6
+              },
+              {
+                "title": "Clinical Laboratory Technologist",
+                "order": 7
+              },
+              {
+                "title": "Medical Records and Information Assistant",
+                "order": 8
+              },
+              {
+                "title": "Optician Assistant",
+                "order": 9
+              },
+              {
+                "title": "Orthotist/Prosthetist",
+                "order": 10
+              },
+              {
+                "title": "Radiologic Technician",
+                "order": 11
+              },
+              {
+                "title": "Radiologic Technologist",
+                "order": 12
+              }
+            ]
+          },
+          {
+            "title": "Optometrist",
+            "possibility_rating": "VP",
+            "order": 9
+          },
+          {
+            "title": "Paramedic",
+            "possibility_rating": "VP",
+            "order": 10,
+            "specializations": [
+              {
+                "title": "Orderly/Ward Assistant",
+                "order": 1
+              },
+              {
+                "title": "Athletic Trainer",
+                "order": 2
+              },
+              {
+                "title": "Embalmer",
+                "order": 3
+              },
+              {
+                "title": "Environmental Health Officer",
+                "order": 4
+              }
+            ]
+          },
+          {
+            "title": "Physician",
+            "possibility_rating": "VP",
+            "order": 11
+          },
+          {
+            "title": "Psychiatrist",
+            "possibility_rating": "VP",
+            "order": 12
+          },
+          {
+            "title": "Dental hygienist",
+            "possibility_rating": "P",
+            "order": 13
+          }
+        ]
+      },
+      {
+        "order": 9,
+        "title": "Hospitality, Tourism and Recreation",
+        "description": "You concern yourself with the personal needs of others, such as hygiene, good food and drink, comfortable lodging away from home and recreation. Services in hotels, restaurants, airplanes, beauty parlors etc are areas to satisfy this interest. Enjoy sports or games? Work for an athletic team",
+        "careers": [
+          {
+            "title": "Travel Agent",
+            "possibility_rating": "HP",
+            "order": 1
+          },
+          {
+            "title": "Recreation Director",
+            "possibility_rating": "HP",
+            "order": 2
+          },
+          {
+            "title": "Hotel Manager",
+            "possibility_rating": "VP",
+            "order": 3
+          },
+          {
+            "title": "Landscaper",
+            "possibility_rating": "VP",
+            "order": 4
+          },
+          {
+            "title": "Model",
+            "possibility_rating": "VP",
+            "order": 5
+          },
+          {
+            "title": "Restaurant Manager",
+            "possibility_rating": "VP",
+            "order": 6
+          },
+          {
+            "title": "Waiter/Waitress",
+            "possibility_rating": "VP",
+            "order": 7
+          },
+          {
+            "title": "Barber/Beautician",
+            "possibility_rating": "P",
+            "order": 8
+          },
+          {
+            "title": "Cook",
+            "possibility_rating": "P",
+            "order": 9,
+            "specializations": [
+              {
+                "title": "Baker (Bread, Pastries)",
+                "order": 1
+              },
+              {
+                "title": "Butcher",
+                "order": 2
+              },
+              {
+                "title": "Chef",
+                "order": 3
+              },
+              {
+                "title": "Cook (Fast Food)",
+                "order": 4
+              },
+              {
+                "title": "Cook (Institution, Cafeteria and Restaurant)",
+                "order": 5
+              },
+              {
+                "title": "Food Preparation Assistant",
+                "order": 6
+              }
+            ]
+          },
+          {
+            "title": "Flight Attendant",
+            "possibility_rating": "P",
+            "order": 10
+          }
+        ]
+      },
+      {
+        "order": 10,
+        "title": "Human Service",
+        "description": "Your priority is helping others improve their social, mental, emotional or spiritual well-being. Counseling, social work, religious work, taking care of children or the elderly as well as investigating to identify the social needs of others are possible career areas.",
+        "careers": [
+          {
+            "title": "Guidance Counselor",
+            "possibility_rating": "HP",
+            "order": 1
+          },
+          {
+            "title": "Minister",
+            "possibility_rating": "HP",
+            "order": 2
+          },
+          {
+            "title": "Religious Education Director",
+            "possibility_rating": "HP",
+            "order": 3
+          },
+          {
+            "title": "Social Worker",
+            "possibility_rating": "HP",
+            "order": 4,
+            "specializations": [
+              {
+                "title": "Clinical Psychologist",
+                "order": 1
+              },
+              {
+                "title": "Marriage and Family Counselor",
+                "order": 2
+              },
+              {
+                "title": "Mental Health Counselor",
+                "order": 3
+              },
+              {
+                "title": "Social Worker (Child, Family, School)",
+                "order": 4
+              },
+              {
+                "title": "Social Worker (Medical and Public Health)",
+                "order": 5
+              },
+              {
+                "title": "Social Worker (Mental Health and Substance Abuse)",
+                "order": 6
+              },
+              {
+                "title": "Probation Officer and Correctional Treatment Specialist",
+                "order": 7
+              },
+              {
+                "title": "Rehabilitation Counselor",
+                "order": 8
+              },
+              {
+                "title": "Social and Human Service Assistants",
+                "order": 9
+              }
+            ]
+          },
+          {
+            "title": "Childcare Provider",
+            "possibility_rating": "VP",
+            "order": 5,
+            "specializations": [
+              {
+                "title": "Babysitter",
+                "order": 1
+              }
+            ]
+          },
+          {
+            "title": "Evangelist",
+            "possibility_rating": "VP",
+            "order": 6
+          },
+          {
+            "title": "Missionary",
+            "possibility_rating": "VP",
+            "order": 7
+          },
+          {
+            "title": "Funeral Director",
+            "possibility_rating": "P",
+            "order": 8
+          },
+          {
+            "title": "Janitor",
+            "possibility_rating": "P",
+            "order": 9
+          }
+        ]
+      },
+      {
+        "order": 11,
+        "title": "Information Technology",
+        "description": "You are interested in designing, developing, managing and supporting information systems. You can work with hardware, software, multimedia, or integrated systems, helping resolve complex problems as a software engineer or systems analyst, servicing computers, machines like ATMs, cash registers etc.",
+        "careers": [
+          {
+            "title": "Computer Programmer",
+            "possibility_rating": "P",
+            "order": 1
+          }
+        ]
+      },
+      {
+        "order": 12,
+        "title": "Law and Public Safety",
+        "description": "You love to uphold people's rights, protect life and property by using authority and enjoy inspecting or investigating. You can work in law, law enforcement, fire fighting, military, crime investigation and other related fields.",
+        "careers": [
+          {
+            "title": "Criminologist",
+            "possibility_rating": "VP",
+            "order": 1
+          },
+          {
+            "title": "Fire fighter",
+            "possibility_rating": "P",
+            "order": 2,
+            "specializations": [
+              {
+                "title": "Emergency Management Officer",
+                "order": 1
+              },
+              {
+                "title": "Fire Investigator",
+                "order": 2
+              }
+            ]
+          },
+          {
+            "title": "Lawyer",
+            "possibility_rating": "P",
+            "order": 3
+          }
+        ]
+      },
+      {
+        "order": 13,
+        "title": "Manufacturing",
+        "description": "Your interest is in processing raw materials into intermediate or finished products by using machines and hand tools. You can work in industry, utility companies and related agencies, cutting and grinding metal and plastics parts into shapes, assembling, moving, installing, or repairing devices. You could manage workers in this field if leadership appeals to you.",
+        "careers": [
+          {
+            "title": "Electrician",
+            "possibility_rating": "P",
+            "order": 1
+          },
+          {
+            "title": "Heavy Equipment Operator",
+            "possibility_rating": "P",
+            "order": 2
+          },
+          {
+            "title": "Manufacturer",
+            "possibility_rating": "P",
+            "order": 3
+          },
+          {
+            "title": "Mechanic",
+            "possibility_rating": "P",
+            "order": 4
+          },
+          {
+            "title": "Metal worker",
+            "possibility_rating": "P",
+            "order": 5
+          }
+        ]
+      },
+      {
+        "order": 14,
+        "title": "Retail & Wholesale Sales and Service",
+        "description": "You are good at persuading others to believe an opinion. By using sales and promotional techniques you may enjoy selling in any field of interest. You could also pursue a career in customer care service if you prefer to help people buy or sell.",
+        "careers": [
+          {
+            "title": "Realtor",
+            "possibility_rating": "HP",
+            "order": 1,
+            "specializations": [
+              {
+                "title": "Real Estate Agent",
+                "order": 1
+              }
+            ]
+          },
+          {
+            "title": "Buyer",
+            "possibility_rating": "P",
+            "order": 2
+          }
+        ]
+      },
+      {
+        "order": 15,
+        "title": "Scientific Research, Engineering and Mathematics",
+        "description": "You love to discover, collect, analyze and apply information about the natural world, you can work as a researcher in any field of interest to solve life's problems. You could study engineering and help create new machines, structures and processes.",
+        "careers": [
+          {
+            "title": "Sociologist",
+            "possibility_rating": "HP",
+            "order": 1
+          },
+          {
+            "title": "Anthropologist",
+            "possibility_rating": "VP",
+            "order": 2
+          },
+          {
+            "title": "Engineer",
+            "possibility_rating": "VP",
+            "order": 3,
+            "specializations": [
+              {
+                "title": "Civil Engineer",
+                "order": 1
+              },
+              {
+                "title": "Aerospace Engineer",
+                "order": 2
+              },
+              {
+                "title": "Biomedical Engineer",
+                "order": 3
+              },
+              {
+                "title": "Chemical Engineer",
+                "order": 4
+              },
+              {
+                "title": "Computer Hardware Engineer",
+                "order": 5
+              },
+              {
+                "title": "Electrical Engineer",
+                "order": 6
+              },
+              {
+                "title": "Electronics Engineer",
+                "order": 7
+              },
+              {
+                "title": "Marine Architect",
+                "order": 8
+              },
+              {
+                "title": "Marine Engineer",
+                "order": 9
+              },
+              {
+                "title": "Materials Engineer",
+                "order": 10
+              },
+              {
+                "title": "Mechanical Engineer",
+                "order": 11
+              },
+              {
+                "title": "Industrial Engineer",
+                "order": 12
+              },
+              {
+                "title": "Product Safety Engineer",
+                "order": 13
+              },
+              {
+                "title": "Fire Prevention and Protection Engineer",
+                "order": 14
+              }
+            ]
+          },
+          {
+            "title": "Home Economist",
+            "possibility_rating": "VP",
+            "order": 4
+          },
+          {
+            "title": "Astronomer",
+            "possibility_rating": "P",
+            "order": 5
+          },
+          {
+            "title": "Biologist",
+            "possibility_rating": "P",
+            "order": 6
+          },
+          {
+            "title": "Botanist",
+            "possibility_rating": "P",
+            "order": 7
+          },
+          {
+            "title": "Chemist",
+            "possibility_rating": "P",
+            "order": 8
+          },
+          {
+            "title": "Mathematician",
+            "possibility_rating": "P",
+            "order": 9
+          },
+          {
+            "title": "Economist",
+            "possibility_rating": "P",
+            "order": 10
+          }
+        ]
+      },
+      {
+        "order": 16,
+        "title": "Transportation, Distribution and Logistics",
+        "description": "You desire to help the smooth movement of people and materials from one place to another. You can drive or pilot a vehicle, manage a transportation service or help keep vehicles on their assigned schedules and routes.",
+        "careers": [
+          {
+            "title": "Airplane Pilot",
+            "possibility_rating": "VP",
+            "order": 1
+          },
+          {
+            "title": "Heavy Equipment Operator",
+            "possibility_rating": "P",
+            "order": 2
+          },
+          {
+            "title": "Bus Driver",
+            "possibility_rating": "P",
+            "order": 3
+          },
+          {
+            "title": "Dock Worker",
+            "possibility_rating": "P",
+            "order": 4
+          }
+        ]
+      }
+    ]
+  }
+}
