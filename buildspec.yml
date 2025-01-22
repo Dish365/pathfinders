@@ -1,0 +1,47 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+      nodejs: 18
+    commands:
+      - pip install --upgrade pip
+      - pip install poetry
+      - npm install -g yarn
+      
+  pre_build:
+    commands:
+      # Install backend dependencies
+      - cd backend
+      - poetry install
+      # Install frontend dependencies
+      - cd ../pathfinders-client
+      - yarn install
+      # Run tests
+      - yarn test
+      - cd ../backend
+      - poetry run pytest
+      
+  build:
+    commands:
+      # Build frontend
+      - cd ../pathfinders-client
+      - yarn build
+      # Collect static files for Django
+      - cd ../backend
+      - poetry run python manage.py collectstatic --noinput
+      
+  post_build:
+    commands:
+      # Run database migrations
+      - poetry run python manage.py migrate --noinput
+      # Create deployment package
+      - cd ..
+      - zip -r deployment.zip . -x "*.git*" "*.pytest_cache*" "*__pycache__*" "*.env*"
+
+artifacts:
+  files:
+    - deployment.zip
+    - appspec.yml
+  discard-paths: no 

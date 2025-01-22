@@ -115,4 +115,8 @@ async def get_progress(user_id: int):
         response = await client.get(
             f"http://localhost:8000/api/assessments/get-progress/{user_id}/"
         )
-        return response.json() 
+        return response.json()
+
+@app.get("/health/")
+async def health_check():
+    return {"status": "healthy"} 
