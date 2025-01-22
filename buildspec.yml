@@ -10,9 +10,11 @@ phases:
       python: 3.11
       nodejs: 18
     commands:
+      # Update and install system dependencies
       - apt-get update
-      - apt-get install -y python3-pip python3-dev libpq-dev
-      - pip install --upgrade pip
+      - apt-get install -y python3.11 python3.11-dev python3-pip libpq-dev
+      - ln -sf /usr/bin/python3.11 /usr/local/bin/python3
+      - ln -sf /usr/bin/python3.11 /usr/local/bin/python
       - curl -sSL https://install.python-poetry.org | python3 -
       - npm install -g yarn
       
@@ -27,6 +29,7 @@ phases:
         DB_USER=${DB_USER}
         DB_PASSWORD=${DB_PASSWORD}
         DB_HOST=${DB_HOST}
+        DB_PORT=${DB_PORT}
         ALLOWED_HOSTS=${ALLOWED_HOSTS}
         EOF
       # Install backend dependencies
