@@ -1,5 +1,17 @@
 version: 0.2
 
+env:
+  secrets-manager:
+    DB_USER: "arn:aws:secretsmanager:eu-north-1:913524923156:secret:pathfinders_db:username"
+    DB_PASSWORD: "arn:aws:secretsmanager:eu-north-1:913524923156:secret:pathfinders_db:password"
+    DB_HOST: "arn:aws:secretsmanager:eu-north-1:913524923156:secret:pathfinders_db:host"
+    DB_NAME: "arn:aws:secretsmanager:eu-north-1:913524923156:secret:pathfinders_db:dbname"
+    GITHUB_TOKEN: "arn:aws:secretsmanager:eu-north-1:913524923156:secret:Pathfinders_GitHub_Access:token"
+  variables:
+    DJANGO_SETTINGS_MODULE: "pathfinders_project.settings"
+    DEBUG: "False"
+    ALLOWED_HOSTS: "pathfindersgifts.com,www.pathfindersgifts.com,13.61.197.147"
+
 phases:
   install:
     runtime-versions:
@@ -14,16 +26,24 @@ phases:
       
   pre_build:
     commands:
+      # Create temporary env file for build
+      - |
+        cat << EOF > .env
+        DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
+        DEBUG=${DEBUG}
+        DB_NAME=${DB_NAME}
+        DB_USER=${DB_USER}
+        DB_PASSWORD=${DB_PASSWORD}
+        DB_HOST=${DB_HOST}
+        ALLOWED_HOSTS=${ALLOWED_HOSTS}
+        EOF
       # Install backend dependencies
       - poetry config virtualenvs.create false
-      - poetry install
+      - poetry install --no-interaction --no-ansi
       # Install frontend dependencies
       - cd pathfinders-client
       - yarn install
-      # Run tests (commenting out tests for initial build)
-      # - yarn test
       - cd ..
-      # - poetry run pytest
       
   build:
     commands:
@@ -32,7 +52,7 @@ phases:
       - yarn build
       # Collect static files for Django
       - cd ..
-      - poetry run python manage.py collectstatic --noinput
+      - poetry run python manage.py collectstatic --noinput --no-input
       
   post_build:
     commands:

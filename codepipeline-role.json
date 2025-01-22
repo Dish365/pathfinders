@@ -43,6 +43,16 @@
                 "codedeploy:RegisterApplicationRevision"
             ],
             "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "secretsmanager:GetSecretValue"
+            ],
+            "Resource": [
+                "arn:aws:secretsmanager:eu-north-1:913524923156:secret:pathfinders_db-*",
+                "arn:aws:secretsmanager:eu-north-1:913524923156:secret:Pathfinders_GitHub_Access-*"
+            ]
         }
     ]
 } 
