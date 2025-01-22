@@ -6,14 +6,17 @@ phases:
       python: 3.11
       nodejs: 18
     commands:
+      - apt-get update
+      - apt-get install -y python3-pip python3-dev libpq-dev
       - pip install --upgrade pip
-      - pip install poetry
+      - curl -sSL https://install.python-poetry.org | python3 -
       - npm install -g yarn
       
   pre_build:
     commands:
       # Install backend dependencies
       - cd backend
+      - poetry config virtualenvs.create false
       - poetry install
       # Install frontend dependencies
       - cd ../pathfinders-client
@@ -44,4 +47,5 @@ artifacts:
   files:
     - deployment.zip
     - appspec.yml
+    - scripts/**/*
   discard-paths: no 
