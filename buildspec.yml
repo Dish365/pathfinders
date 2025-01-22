@@ -2,11 +2,11 @@ version: 0.2
 
 env:
   secrets-manager:
-    DB_USER: "arn:aws:secretsmanager:eu-north-1:913524923156:secret:pathfinders_db:username"
-    DB_PASSWORD: "arn:aws:secretsmanager:eu-north-1:913524923156:secret:pathfinders_db:password"
-    DB_HOST: "arn:aws:secretsmanager:eu-north-1:913524923156:secret:pathfinders_db:host"
-    DB_NAME: "arn:aws:secretsmanager:eu-north-1:913524923156:secret:pathfinders_db:dbname"
-    GITHUB_TOKEN: "arn:aws:secretsmanager:eu-north-1:913524923156:secret:Pathfinders_GitHub_Access:token"
+    DB_USER: "pathfinders_db:username"
+    DB_PASSWORD: "pathfinders_db:password"
+    DB_HOST: "pathfinders_db:host"
+    DB_NAME: "pathfinders_db:dbname"
+    GITHUB_TOKEN: "Pathfinders_GitHub_Access:token"
   variables:
     DJANGO_SETTINGS_MODULE: "pathfinders_project.settings"
     DEBUG: "False"
