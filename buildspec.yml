@@ -2,11 +2,11 @@ version: 0.2
 
 env:
   secrets-manager:
-    DB_USER: "pathfinders_db:user"
+    DB_USER: "pathfinders_db:username"
     DB_PASSWORD: "pathfinders_db:password"
     DB_HOST: "pathfinders_db:host"
-    DB_NAME: "pathfinders_db:name"
-    GITHUB_TOKEN: "Pathfinders_GitHub_Access:github_token"
+    DB_NAME: "pathfinders_db:dbInstanceIdentifier"
+    GITHUB_TOKEN: "Pathfinders_GitHub_Access:Token"
   variables:
     DJANGO_SETTINGS_MODULE: "pathfinders_project.settings"
     DEBUG: "False"
