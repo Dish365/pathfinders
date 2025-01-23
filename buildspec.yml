@@ -2,30 +2,25 @@ version: 0.2
 
 phases:
   install:
+    runtime-versions:
+      python: 3.11
+      nodejs: 18
     commands:
-      # Install Python 3.11
       - yum update -y
-      - yum install -y python3.11 python3.11-devel python3.11-pip gcc postgresql-devel
-      # Install Node.js 18
-      - curl -sL https://rpm.nodesource.com/setup_18.x | bash -
-      - yum install -y nodejs
-      # Install build tools
+      - yum install -y coreutils
+      - yum install -y python3.11-devel gcc postgresql-devel
       - yum groupinstall -y "Development Tools"
-      # Install Python tools
       - python3.11 -m pip install --upgrade pip setuptools wheel
       - python3.11 -m pip install poetry
-      # Install Yarn
       - npm install -g yarn
       
   pre_build:
     commands:
-      # Verify installations
       - python3.11 --version
       - node --version
       - npm --version
       - yarn --version
       - poetry --version
-      # Project setup
       - poetry config virtualenvs.create false
       - poetry install --no-interaction --no-ansi
       - cd pathfinders-client && yarn install && cd ..
