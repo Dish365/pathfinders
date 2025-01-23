@@ -18,38 +18,34 @@ poetry install
 
 # Collect static files
 poetry run python manage.py collectstatic --noinput
-
-# Create deployment package
-zip -r deployment.zip . \
-    -x "*.git*" \
-    -x "*.pytest_cache*" \
-    -x "*__pycache__*" \
-    -x "*.env*" \
-    -x "pathfinders-client/node_modules/*" \
-    -x "pathfinders-client/.next/*" \
-    -x "pathfinders.pem"
 ```
 
 ## 2. EC2 Deployment
 
-### Transfer Files
-```bash
-# Set key permissions
-chmod 400 pathfinders.pem
-
-# Transfer files to EC2
-scp -i pathfinders.pem deployment.zip ec2-user@13.61.197.147:/home/ec2-user/
-scp -i pathfinders.pem appspec.yml ec2-user@13.61.197.147:/home/ec2-user/
-scp -r -i pathfinders.pem scripts ec2-user@13.61.197.147:/home/ec2-user/
-```
-
-### SSH and Initial Setup
+### Initial Server Setup
 ```bash
 # Connect to EC2
-ssh -i pathfinders.pem ec2-user@13.61.197.147
+ssh -i pathfinders.pem ubuntu@13.61.197.147
 
-# Create environment file
-cat > /home/ec2-user/app/.env << EOL
+# Install Git
+sudo apt update
+sudo apt install -y git
+
+# Set up Git credentials (replace with your details)
+git config --global user.name "Dish365"
+git config --global user.email "dishdevinfo@gmail.com"
+
+# Create SSH key for GitHub (if needed)
+ssh-keygen -t ed25519 -C "dishdevinfo@gmail.com"
+cat ~/.ssh/id_ed25519.pub
+# Add this key to your GitHub account at https://github.com/settings/keys
+
+# Clone the repository
+git clone git@github.com:Dish365/pathfinders.git /home/ubuntu/app
+cd /home/ubuntu/app
+
+# Create and configure environment file
+cat > .env << EOL
 DB_USER=pathfinders_db
 DB_PASSWORD=vYqzB@MiguJR8k6
 DB_HOST=pathfinders.c3oqsqcmizjz.eu-north-1.rds.amazonaws.com
@@ -60,26 +56,21 @@ ALLOWED_HOSTS=pathfindersgifts.com,www.pathfindersgifts.com,13.61.197.147
 FASTAPI_URL=http://localhost:8001
 DJANGO_API_URL=http://localhost:8000
 EOL
-
-# Extract deployment package
-unzip deployment.zip -d /home/ec2-user/app
-cd /home/ec2-user/app
 ```
 
 ### System Dependencies
 ```bash
 # Update system packages
-sudo yum update -y
-sudo yum install -y python3.11-devel gcc postgresql-devel
-sudo yum groupinstall -y "Development Tools"
+sudo apt update
+sudo apt install -y python3.11-dev build-essential libpq-dev
 
 # Install Node.js
-curl -sL https://rpm.nodesource.com/setup_18.x | sudo bash -
-sudo yum install -y nodejs
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt install -y nodejs
 
 # Install Poetry
 curl -sSL https://install.python-poetry.org | python3 -
-export PATH="/home/ec2-user/.local/bin:$PATH"
+export PATH="/home/ubuntu/.local/bin:$PATH"
 ```
 
 ### Application Setup
@@ -103,10 +94,10 @@ Description=Gunicorn daemon for Pathfinders
 After=network.target
 
 [Service]
-User=ec2-user
-Group=ec2-user
-WorkingDirectory=/home/ec2-user/app
-ExecStart=/home/ec2-user/.local/bin/poetry run gunicorn pathfinders_project.wsgi:application --bind 127.0.0.1:8000
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/app
+ExecStart=/home/ubuntu/.local/bin/poetry run gunicorn pathfinders_project.wsgi:application --bind 127.0.0.1:8000
 
 [Install]
 WantedBy=multi-user.target
@@ -121,10 +112,10 @@ Description=FastAPI service for Pathfinders
 After=network.target
 
 [Service]
-User=ec2-user
-Group=ec2-user
-WorkingDirectory=/home/ec2-user/app
-ExecStart=/home/ec2-user/.local/bin/poetry run uvicorn fastapi_app.main:app --host 127.0.0.1 --port 8001
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/app
+ExecStart=/home/ubuntu/.local/bin/poetry run uvicorn fastapi_app.main:app --host 127.0.0.1 --port 8001
 
 [Install]
 WantedBy=multi-user.target
@@ -133,8 +124,8 @@ EOL
 
 ### Nginx Configuration
 ```bash
-# Install certbot for SSL
-sudo yum install -y certbot python3-certbot-nginx
+# Install nginx and certbot
+sudo apt install -y nginx certbot python3-certbot-nginx
 
 # Get SSL certificate
 sudo certbot --nginx -d pathfindersgifts.com -d www.pathfindersgifts.com
@@ -158,13 +149,13 @@ server {
 
     # Static files configuration
     location /static/ {
-        alias /home/ec2-user/app/staticfiles/;
+        alias /home/ubuntu/app/staticfiles/;
         expires 30d;
         add_header Cache-Control "public, no-transform";
     }
 
     location /media/ {
-        alias /home/ec2-user/app/media/;
+        alias /home/ubuntu/app/media/;
         expires 30d;
         add_header Cache-Control "public, no-transform";
     }
@@ -193,117 +184,3 @@ server {
 }
 EOL
 ```
-
-### Static Files Setup
-```bash
-# Create required directories
-sudo mkdir -p /home/ec2-user/app/staticfiles
-sudo mkdir -p /home/ec2-user/app/media
-
-# Set correct permissions
-sudo chown -R ec2-user:ec2-user /home/ec2-user/app/staticfiles
-sudo chown -R ec2-user:ec2-user /home/ec2-user/app/media
-sudo chmod -R 755 /home/ec2-user/app/staticfiles
-sudo chmod -R 755 /home/ec2-user/app/media
-
-# Collect static files
-cd /home/ec2-user/app
-poetry run python manage.py collectstatic --noinput --clear
-
-# Verify static files
-ls -la /home/ec2-user/app/staticfiles/
-```
-
-### SSL Certificate Auto-renewal
-```bash
-# Test auto-renewal
-sudo certbot renew --dry-run
-
-# Add cronjob for certificate renewal
-sudo crontab -e
-# Add this line:
-0 0 * * * /usr/bin/certbot renew --quiet --post-hook "systemctl reload nginx"
-```
-
-## 4. Start Services
-```bash
-# Start and enable services
-sudo systemctl start gunicorn
-sudo systemctl enable gunicorn
-sudo systemctl start fastapi
-sudo systemctl enable fastapi
-sudo systemctl restart nginx
-```
-
-## 5. Verification and Troubleshooting
-
-### Check Service Status
-```bash
-# Check all services
-sudo systemctl status gunicorn
-sudo systemctl status fastapi
-sudo systemctl status nginx
-```
-
-### View Logs
-```bash
-# Application logs
-sudo journalctl -u gunicorn -f
-sudo journalctl -u fastapi -f
-sudo tail -f /var/log/nginx/error.log
-```
-
-### Common Issues
-
-#### Permission Issues
-```bash
-# Fix ownership
-sudo chown -R ec2-user:ec2-user /home/ec2-user/app
-```
-
-#### Service Issues
-```bash
-# Restart services
-sudo systemctl restart gunicorn
-sudo systemctl restart fastapi
-sudo systemctl restart nginx
-```
-
-#### SELinux Issues
-```bash
-# If encountering SELinux-related issues
-sudo setsebool -P httpd_can_network_connect 1
-```
-
-### SSL Certificate Verification
-```bash
-# Check SSL certificate status
-sudo certbot certificates
-
-# Test SSL configuration
-curl -vI https://pathfindersgifts.com
-
-# Verify Nginx SSL configuration
-sudo nginx -t
-```
-
-### Static Files Verification
-```bash
-# Check static files are being served
-curl -I https://pathfindersgifts.com/static/admin/css/base.css
-curl -I https://pathfindersgifts.com/static/rest_framework/css/bootstrap.min.css
-```
-
-## 6. Security Reminders
-- Update the database password after initial deployment
-- Configure SSL/TLS certificates
-- Regularly update system packages
-- Monitor application logs
-- Back up your database regularly
-
-## 7. Post-Deployment
-- Verify the application at http://pathfindersgifts.com
-- Test all major functionality
-- Monitor error logs for any issues
-- Set up monitoring and alerts
-
