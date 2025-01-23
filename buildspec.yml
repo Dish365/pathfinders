@@ -4,12 +4,13 @@ phases:
   install:
     runtime-versions:
       python: 3.11
-      nodejs: 18
     commands:
       - yum update -y
       - yum install -y coreutils
       - yum install -y python3.11-devel gcc postgresql-devel
       - yum groupinstall -y "Development Tools"
+      - curl -sL https://rpm.nodesource.com/setup_18.x | bash -
+      - yum install -y nodejs
       - python3.11 -m pip install --upgrade pip setuptools wheel
       - python3.11 -m pip install poetry
       - npm install -g yarn

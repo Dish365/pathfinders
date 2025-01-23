@@ -1,8 +1,14 @@
 [tool.poetry]
 name = "pathfinders"
 version = "0.1.0"
-description = "Spiritual Gift Assessment Platform"
-authors = ["Your Name <your.email@example.com>"]
+description = "Identify Your God given  Gifts According to Romans 12:6-8, and find be best career that matches your gifts"
+authors = ["Emmanuel Amankrah Kwofie <amankrahkwame@gmail.com>", "Rev. Dr. Edem Tettey <drtetteyedem@gmail.com>"]
+packages = [
+    { include = "pathfinders_project" },
+    { include = "core" },
+    { include = "assessments" },
+    { include = "fastapi_app" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.11"
