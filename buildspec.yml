@@ -10,7 +10,6 @@ phases:
       python: 3.11
       nodejs: 18
     commands:
-      # Update and install system dependencies
       - apt-get update
       - apt-get install -y python3.11 python3.11-dev python3-pip libpq-dev
       - ln -sf /usr/bin/python3.11 /usr/local/bin/python3
@@ -20,7 +19,6 @@ phases:
       
   pre_build:
     commands:
-      # Create temporary env file for build
       - |
         cat << EOF > .env
         DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
@@ -32,28 +30,22 @@ phases:
         DB_PORT=${DB_PORT}
         ALLOWED_HOSTS=${ALLOWED_HOSTS}
         EOF
-      # Install backend dependencies
       - poetry config virtualenvs.create false
       - poetry install --no-interaction --no-ansi
-      # Install frontend dependencies
       - cd pathfinders-client
       - yarn install
       - cd ..
       
   build:
     commands:
-      # Build frontend
       - cd pathfinders-client
       - yarn build
-      # Collect static files for Django
       - cd ..
       - poetry run python manage.py collectstatic --noinput --no-input
       
   post_build:
     commands:
-      # Run database migrations
       - poetry run python manage.py migrate --noinput
-      # Create deployment package
       - zip -r deployment.zip . -x "*.git*" "*.pytest_cache*" "*__pycache__*" "*.env*" "pathfinders-client/node_modules/*" "pathfinders-client/.next/*"
 
 artifacts:
@@ -61,4 +53,4 @@ artifacts:
     - deployment.zip
     - appspec.yml
     - scripts/**/*
-  discard-paths: no 
+  discard-paths: no
