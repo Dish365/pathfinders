@@ -82,4 +82,5 @@ venv/
 
 # IDE
 .vscode/
-.idea/
+.idea/# Deployment
+deployment.md
