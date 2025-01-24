@@ -97,7 +97,17 @@ After=network.target
 User=ubuntu
 Group=ubuntu
 WorkingDirectory=/home/ubuntu/app
-ExecStart=/home/ubuntu/.local/bin/poetry run gunicorn pathfinders_project.wsgi:application --bind 127.0.0.1:8000
+ExecStart=/home/ubuntu/.local/bin/poetry run gunicorn pathfinders_project.wsgi:application \
+    --bind 127.0.0.1:8000 \
+    --workers 4 \
+    --worker-class uvicorn.workers.UvicornWorker \
+    --max-requests 1000 \
+    --max-requests-jitter 50 \
+    --timeout 120 \
+    --keep-alive 5
+
+Restart=always
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
@@ -115,7 +125,20 @@ After=network.target
 User=ubuntu
 Group=ubuntu
 WorkingDirectory=/home/ubuntu/app
-ExecStart=/home/ubuntu/.local/bin/poetry run uvicorn fastapi_app.main:app --host 127.0.0.1 --port 8001
+Environment="PATH=/home/ubuntu/.local/bin:$PATH"
+ExecStart=/home/ubuntu/.local/bin/poetry run uvicorn fastapi_app.main:app \
+    --host 127.0.0.1 \
+    --port 8001 \
+    --workers 2 \
+    --limit-concurrency 50 \
+    --backlog 2048 \
+    --timeout-keep-alive 5 \
+    --proxy-headers \
+    --forwarded-allow-ips='*'
+
+Restart=always
+RestartSec=5
+StartLimitIntervalSec=0
 
 [Install]
 WantedBy=multi-user.target
@@ -132,55 +155,119 @@ sudo certbot --nginx -d pathfindersgifts.com -d www.pathfindersgifts.com
 
 # Configure Nginx with SSL and static files
 sudo tee /etc/nginx/conf.d/pathfinders.conf << EOL
+# Upstream definitions for load balancing
+upstream django_backend {
+    server 127.0.0.1:8000;
+    keepalive 32;
+}
+
+upstream fastapi_backend {
+    server 127.0.0.1:8001;
+    keepalive 32;
+}
+
+# HTTP redirect
 server {
     listen 80;
     server_name pathfindersgifts.com www.pathfindersgifts.com;
     return 301 https://\$server_name\$request_uri;
 }
 
+# HTTPS server
 server {
-    listen 443 ssl;
+    listen 443 ssl http2;
     server_name pathfindersgifts.com www.pathfindersgifts.com;
 
     ssl_certificate /etc/letsencrypt/live/pathfindersgifts.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/pathfindersgifts.com/privkey.pem;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:SSL:50m;
+    ssl_session_tickets off;
     ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers HIGH:!aNULL:!MD5;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+    ssl_prefer_server_ciphers off;
 
-    # Static files configuration
+    # Static files configuration with improved caching
     location /static/ {
         alias /home/ubuntu/app/staticfiles/;
         expires 30d;
         add_header Cache-Control "public, no-transform";
+        access_log off;
+        gzip_static on;
     }
 
     location /media/ {
         alias /home/ubuntu/app/media/;
         expires 30d;
         add_header Cache-Control "public, no-transform";
+        access_log off;
+        gzip_static on;
     }
 
+    # Django backend
     location / {
-        proxy_pass http://127.0.0.1:8000;
+        proxy_pass http://django_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "upgrade";
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_buffering on;
+        proxy_buffer_size 8k;
+        proxy_buffers 8 8k;
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
     }
 
+    # FastAPI backend
     location /api/fastapi/ {
-        proxy_pass http://127.0.0.1:8001;
+        proxy_pass http://fastapi_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "upgrade";
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_buffering on;
+        proxy_buffer_size 8k;
+        proxy_buffers 8 8k;
     }
 
-    # Additional security headers
+    # Security headers
     add_header X-Content-Type-Options nosniff;
     add_header X-Frame-Options "SAMEORIGIN";
     add_header X-XSS-Protection "1; mode=block";
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin";
+    add_header Permissions-Policy "camera=(), microphone=(), geolocation=()";
+
+    # Enable compression
+    gzip on;
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_comp_level 6;
+    gzip_types text/plain text/css text/xml application/json application/javascript application/xml+rss application/atom+xml image/svg+xml;
 }
 EOL
+```
+
+### Final Steps
+```bash
+# Test Nginx configuration
+sudo nginx -t
+
+# Reload services
+sudo systemctl daemon-reload
+sudo systemctl restart gunicorn
+sudo systemctl restart fastapi
+sudo systemctl restart nginx
+
+# Enable services on boot
+sudo systemctl enable gunicorn
+sudo systemctl enable fastapi
+sudo systemctl enable nginx
 ```
