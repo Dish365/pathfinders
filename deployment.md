@@ -92,6 +92,23 @@ EOL
 
 # Verify RDS connection
 nc -zv pathfinders.c3oqsqcmizjz.eu-north-1.rds.amazonaws.com 5432
+
+# Set up database using master credentials from AWS Secrets Manager
+PGPASSWORD='N~4$IZcef0Sf!jEILxv?$bRTiMp_' psql "sslmode=require host=pathfinders.c3oqsqcmizjz.eu-north-1.rds.amazonaws.com port=5432 dbname=postgres user=postgres" << EOL
+CREATE DATABASE pathfinders;
+CREATE USER pathfinders_db WITH PASSWORD 'vYqzB@MiguJR8k6';
+GRANT ALL PRIVILEGES ON DATABASE pathfinders TO pathfinders_db;
+EOL
+
+# Connect to the pathfinders database and grant schema permissions
+PGPASSWORD='N~4$IZcef0Sf!jEILxv?$bRTiMp_' psql "sslmode=require host=pathfinders.c3oqsqcmizjz.eu-north-1.rds.amazonaws.com port=5432 dbname=pathfinders user=postgres" << EOL
+GRANT ALL ON SCHEMA public TO pathfinders_db;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO pathfinders_db;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO pathfinders_db;
+EOL
+
+# Verify connection with application user
+PGPASSWORD=vYqzB@MiguJR8k6 psql "sslmode=require host=pathfinders.c3oqsqcmizjz.eu-north-1.rds.amazonaws.com port=5432 dbname=pathfinders user=pathfinders_db" -c "\conninfo"
 ```
 
 ### System Dependencies
@@ -143,6 +160,12 @@ cd pathfinders-client && yarn install && yarn build && cd ..
 # Database migrations and initial data
 poetry run python manage.py migrate
 poetry run python manage.py load_questions
+
+# Test Django directly
+poetry run python manage.py check
+
+# Try running Django development server temporarily to see any errors
+poetry run python manage.py runserver 0.0.0.0:8002
 ```
 
 ## 3. Service Configuration
@@ -161,9 +184,6 @@ WorkingDirectory=/home/ubuntu/app
 ExecStart=/home/ubuntu/.local/bin/poetry run gunicorn pathfinders_project.wsgi:application \
     --bind 127.0.0.1:8000 \
     --workers 4 \
-    --worker-class uvicorn.workers.UvicornWorker \
-    --max-requests 1000 \
-    --max-requests-jitter 50 \
     --timeout 120 \
     --keep-alive 5
 
@@ -206,16 +226,24 @@ WantedBy=multi-user.target
 EOL
 ```
 
+### EC2 Security Group Configuration
+```bash
+# Configure EC2 Security Group in AWS Console:
+# 1. Go to EC2 > Security Groups
+# 2. Select the security group attached to your EC2 instance
+# 3. Edit inbound rules and add:
+#    - Type: HTTP, Port: 80, Source: 0.0.0.0/0
+#    - Type: HTTPS, Port: 443, Source: 0.0.0.0/0
+#    - Type: PostgreSQL, Port: 5432, Source: Your RDS security group ID
+```
+
 ### Nginx Configuration
 ```bash
 # Install nginx and certbot
 sudo apt install -y nginx certbot python3-certbot-nginx
 
-# Get SSL certificate
-sudo certbot --nginx -d pathfindersgifts.com -d www.pathfindersgifts.com
-
-# Configure Nginx with SSL and static files
-sudo tee /etc/nginx/conf.d/pathfinders.conf << EOL
+# Create initial Nginx configuration without SSL
+sudo tee /etc/nginx/conf.d/pathfinders.conf << 'EOL'
 # Upstream definitions for load balancing
 upstream django_backend {
     server 127.0.0.1:8000;
@@ -227,11 +255,11 @@ upstream fastapi_backend {
     keepalive 32;
 }
 
-# HTTP redirect
+# HTTP server (redirect to HTTPS)
 server {
     listen 80;
     server_name pathfindersgifts.com www.pathfindersgifts.com;
-    return 301 https://\$server_name\$request_uri;
+    return 301 https://$server_name$request_uri;
 }
 
 # HTTPS server
@@ -239,6 +267,7 @@ server {
     listen 443 ssl http2;
     server_name pathfindersgifts.com www.pathfindersgifts.com;
 
+    # SSL configuration
     ssl_certificate /etc/letsencrypt/live/pathfindersgifts.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/pathfindersgifts.com/privkey.pem;
     ssl_session_timeout 1d;
@@ -248,7 +277,22 @@ server {
     ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
     ssl_prefer_server_ciphers off;
 
-    # Static files configuration with improved caching
+    # Security headers
+    add_header X-Content-Type-Options nosniff;
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-XSS-Protection "1; mode=block";
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin";
+
+    # Static files configuration
+    location /_next/static/ {
+        alias /home/ubuntu/app/pathfinders-client/.next/static/;
+        expires 30d;
+        add_header Cache-Control "public, no-transform";
+        access_log off;
+        gzip_static on;
+    }
+
     location /static/ {
         alias /home/ubuntu/app/staticfiles/;
         expires 30d;
@@ -269,12 +313,12 @@ server {
     location / {
         proxy_pass http://django_backend;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering on;
         proxy_buffer_size 8k;
         proxy_buffers 8 8k;
@@ -287,24 +331,16 @@ server {
     location /api/fastapi/ {
         proxy_pass http://fastapi_backend;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering on;
         proxy_buffer_size 8k;
         proxy_buffers 8 8k;
     }
-
-    # Security headers
-    add_header X-Content-Type-Options nosniff;
-    add_header X-Frame-Options "SAMEORIGIN";
-    add_header X-XSS-Protection "1; mode=block";
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
-    add_header Referrer-Policy "strict-origin-when-cross-origin";
-    add_header Permissions-Policy "camera=(), microphone=(), geolocation=()";
 
     # Enable compression
     gzip on;
@@ -314,6 +350,37 @@ server {
     gzip_types text/plain text/css text/xml application/json application/javascript application/xml+rss application/atom+xml image/svg+xml;
 }
 EOL
+
+# Test and restart Nginx
+sudo nginx -t
+sudo systemctl restart nginx
+
+# Verify Nginx is listening on port 80
+sudo apt install -y net-tools
+sudo netstat -tlpn | grep 'nginx'
+
+# Important: Before running certbot, ensure:
+# 1. DNS A records point to EC2 IP (13.61.197.147)
+# 2. EC2 security group allows inbound traffic on ports 80 and 443
+# 3. Nginx is running and accessible
+
+# Get and install SSL certificate
+sudo certbot --nginx -d pathfindersgifts.com -d www.pathfindersgifts.com
+
+# Certbot will automatically modify the Nginx configuration to handle SSL
+# and set up auto-renewal of certificates
+
+# Verify Nginx configuration after SSL setup
+sudo nginx -t
+sudo systemctl restart nginx
+
+# Verify SSL certificate installation
+curl -vI https://pathfindersgifts.com
+# Should show: SSL certificate verify ok
+# And: HTTP/2 200
+
+# Certificate will auto-renew via certbot's systemd timer
+sudo systemctl status certbot.timer
 ```
 
 ### Final Steps
@@ -331,4 +398,13 @@ sudo systemctl restart nginx
 sudo systemctl enable gunicorn
 sudo systemctl enable fastapi
 sudo systemctl enable nginx
+
+# Check Django/Gunicorn logs
+sudo journalctl -u gunicorn -n 50
+
+# Check FastAPI logs
+sudo journalctl -u fastapi -n 50
+
+# Check Nginx error logs
+sudo tail -f /var/log/nginx/error.log
 ```

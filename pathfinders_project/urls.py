@@ -15,11 +15,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 from users.views import UserViewSet, ProfileViewSet, LoginView, LogoutView, CsrfTokenView
 from assessments.views import QuestionViewSet, AssessmentViewSet
 from books.views import BookViewSet, CareerChoiceViewSet, CareerResearchNoteViewSet
+from core.views import serve_frontend, health_check
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='users')
@@ -32,6 +33,7 @@ router.register(r'career-notes', CareerResearchNoteViewSet, basename='career-not
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('health/', health_check, name='health-check'),
     path('api/', include([
         path('', include(router.urls)),
         path('auth/', include([
@@ -52,4 +54,6 @@ urlpatterns = [
         ])),
         path('csrf/', CsrfTokenView.as_view(), name='csrf-token'),
     ])),
+    # Serve frontend for all other routes
+    re_path(r'^(?P<path>.*)$', serve_frontend, name='frontend'),
 ]
