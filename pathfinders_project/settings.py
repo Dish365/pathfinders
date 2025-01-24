@@ -81,10 +81,11 @@ DATABASES = {
         'NAME': os.getenv('DB_NAME', 'pathfinders_db'),
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_PROXY_ENDPOINT', 'pathproxy.proxy-xxxxx.eu-north-1.rds.amazonaws.com'),
+        'HOST': os.getenv('DB_HOST', 'pathfinders.c3oqsqcmizjz.eu-north-1.rds.amazonaws.com'),
         'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
+
 
 AUTH_USER_MODEL = 'users.User'
 

@@ -27,22 +27,55 @@ poetry run python manage.py collectstatic --noinput
 # Connect to EC2
 ssh -i pathfinders.pem ubuntu@13.61.197.147
 
-# Install Git
+# Update system packages
 sudo apt update
+
+# Install Git
 sudo apt install -y git
 
-# Set up Git credentials (replace with your details)
+# Set up Git credentials
 git config --global user.name "Dish365"
 git config --global user.email "dishdevinfo@gmail.com"
 
-# Create SSH key for GitHub (if needed)
+# Generate SSH key for GitHub
 ssh-keygen -t ed25519 -C "dishdevinfo@gmail.com"
+# When prompted for file location, just press Enter to use default
+# When prompted for passphrase, you can press Enter for no passphrase
+
+# Set up SSH directory and permissions
+mkdir -p ~/.ssh
+mv key_ed25519 ~/.ssh/id_ed25519
+mv key_ed25519.pub ~/.ssh/id_ed25519.pub
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/id_ed25519
+chmod 644 ~/.ssh/id_ed25519.pub
+
+# Start SSH agent and add key
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+
+# Display public key to add to GitHub
 cat ~/.ssh/id_ed25519.pub
-# Add this key to your GitHub account at https://github.com/settings/keys
+# Copy this key and add it to GitHub at https://github.com/settings/keys
+
+# Test GitHub connection
+ssh -T git@github.com
+# Type 'yes' when prompted to continue connecting
+
+# Create app directory and set permissions
+sudo mkdir -p /home/ubuntu/app
+sudo chown ubuntu:ubuntu /home/ubuntu/app
 
 # Clone the repository
 git clone git@github.com:Dish365/pathfinders.git /home/ubuntu/app
 cd /home/ubuntu/app
+```
+
+### Environment Setup
+```bash
+# Create static directory
+mkdir -p /home/ubuntu/app/static
+mkdir -p /home/ubuntu/app/staticfiles
 
 # Create and configure environment file
 cat > .env << EOL
@@ -56,27 +89,55 @@ ALLOWED_HOSTS=pathfindersgifts.com,www.pathfindersgifts.com,13.61.197.147
 FASTAPI_URL=http://localhost:8001
 DJANGO_API_URL=http://localhost:8000
 EOL
+
+# Verify RDS connection
+nc -zv pathfinders.c3oqsqcmizjz.eu-north-1.rds.amazonaws.com 5432
 ```
 
 ### System Dependencies
 ```bash
 # Update system packages
 sudo apt update
-sudo apt install -y python3.11-dev build-essential libpq-dev
+sudo apt install -y python3-dev python3.12-dev build-essential libpq-dev
 
-# Install Node.js
+# Install Node.js and npm
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt install -y nodejs
+
+# Install Yarn
+curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/yarnkey.gpg >/dev/null
+echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt update
+sudo apt install -y yarn
+
+# Verify installations
+node --version  # Should show v18.x.x
+npm --version   # Should show 8.x.x or higher
+yarn --version  # Should show 1.22.x or higher
+python3 --version  # Should show Python 3.12.x
 
 # Install Poetry
 curl -sSL https://install.python-poetry.org | python3 -
 export PATH="/home/ubuntu/.local/bin:$PATH"
+
+# Add PATH to .bashrc for persistence
+echo 'export PATH="/home/ubuntu/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
 ```
 
 ### Application Setup
 ```bash
 # Install dependencies
-poetry install
+cd /home/ubuntu/app
+
+# Install Python dependencies with Poetry
+poetry config virtualenvs.in-project true  # Keep virtualenv in project directory
+poetry install --no-root  # Install dependencies without the project itself
+
+# If you get any missing package errors, install them explicitly
+poetry add pytz
+
+# Build frontend
 cd pathfinders-client && yarn install && yarn build && cd ..
 
 # Database migrations and initial data
