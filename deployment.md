@@ -166,6 +166,10 @@ poetry run python manage.py check
 
 # Try running Django development server temporarily to see any errors
 poetry run python manage.py runserver 0.0.0.0:8002
+
+mkdir -p /home/ubuntu/app/templates
+cp /home/ubuntu/app/pathfinders-client/.next/server/pages/index.html /home/ubuntu/app/templates/index.html
+cp -r /home/ubuntu/app/pathfinders-client/.next/static /home/ubuntu/app/pathfinders-client/.next/
 ```
 
 ## 3. Service Configuration
@@ -259,6 +263,13 @@ upstream fastapi_backend {
 server {
     listen 80;
     server_name pathfindersgifts.com www.pathfindersgifts.com;
+    
+    # Block WordPress probing attempts
+    location ~* ^/wp-(admin|login|content|includes) {
+        deny all;
+        return 404;
+    }
+    
     return 301 https://$server_name$request_uri;
 }
 
@@ -277,39 +288,133 @@ server {
     ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
     ssl_prefer_server_ciphers off;
 
-    # Security headers
-    add_header X-Content-Type-Options nosniff;
-    add_header X-Frame-Options "SAMEORIGIN";
-    add_header X-XSS-Protection "1; mode=block";
+    # Security headers (unified and always applied)
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
-    add_header Referrer-Policy "strict-origin-when-cross-origin";
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Cross-Origin-Opener-Policy "same-origin" always;
+    add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
 
-    # Static files configuration
+    # Block WordPress probing attempts
+    location ~* ^/wp-(admin|login|content|includes) {
+        deny all;
+        return 404;
+    }
+
+    # Next.js static files
     location /_next/static/ {
-        alias /home/ubuntu/app/pathfinders-client/.next/static/;
+        alias /home/ubuntu/app/staticfiles/_next/static/;
         expires 30d;
         add_header Cache-Control "public, no-transform";
+        add_header Content-Type "application/javascript" always;
+        try_files $uri $uri/ =404;
         access_log off;
         gzip_static on;
+        
+        # Disable unnecessary security headers for static content
+        add_header X-Frame-Options "" always;
+        add_header X-Content-Type-Options "" always;
+        add_header X-XSS-Protection "" always;
     }
 
+    # Django static files
     location /static/ {
-        alias /home/ubuntu/app/staticfiles/;
+        root /home/ubuntu/app/staticfiles;
+        try_files $uri $uri/ =404;
         expires 30d;
-        add_header Cache-Control "public, no-transform";
+        add_header Cache-Control "public, no-transform, must-revalidate, max-age=2592000";
         access_log off;
         gzip_static on;
+        
+        # Disable unnecessary security headers for static content
+        add_header X-Frame-Options "" always;
+        add_header X-Content-Type-Options "" always;
+        add_header X-XSS-Protection "" always;
     }
 
+    # Media files
     location /media/ {
         alias /home/ubuntu/app/media/;
+        try_files $uri $uri/ =404;
         expires 30d;
-        add_header Cache-Control "public, no-transform";
+        add_header Cache-Control "public, no-transform, must-revalidate, max-age=2592000";
         access_log off;
         gzip_static on;
     }
 
-    # Django backend
+    # FastAPI backend
+    location /api/fastapi/ {
+        proxy_pass http://fastapi_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering on;
+        proxy_buffer_size 8k;
+        proxy_buffers 8 8k;
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+    }
+
+    # Django backend API
+    location /api/ {
+        proxy_pass http://django_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering on;
+        proxy_buffer_size 8k;
+        proxy_buffers 8 8k;
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+
+        # CORS headers for API
+        add_header Access-Control-Allow-Origin $http_origin always;
+        add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS, PATCH" always;
+        add_header Access-Control-Allow-Headers "Authorization, Content-Type, X-CSRFToken" always;
+        add_header Access-Control-Allow-Credentials "true" always;
+        add_header Access-Control-Max-Age "3600" always;
+
+        # Handle OPTIONS method for CORS preflight
+        if ($request_method = OPTIONS) {
+            return 204;
+        }
+    }
+
+    # Django admin
+    location /admin/ {
+        proxy_pass http://django_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering on;
+        proxy_buffer_size 8k;
+        proxy_buffers 8 8k;
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+
+        # Additional security for admin
+        allow 13.61.197.147;  # Your server IP
+        deny all;
+    }
+
+    # Root location - serve Next.js frontend through Django
     location / {
         proxy_pass http://django_backend;
         proxy_http_version 1.1;
@@ -327,27 +432,30 @@ server {
         proxy_read_timeout 60s;
     }
 
-    # FastAPI backend
-    location /api/fastapi/ {
-        proxy_pass http://fastapi_backend;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering on;
-        proxy_buffer_size 8k;
-        proxy_buffers 8 8k;
-    }
-
     # Enable compression
     gzip on;
     gzip_vary on;
     gzip_proxied any;
     gzip_comp_level 6;
-    gzip_types text/plain text/css text/xml application/json application/javascript application/xml+rss application/atom+xml image/svg+xml;
+    gzip_buffers 16 8k;
+    gzip_http_version 1.1;
+    gzip_min_length 256;
+    gzip_types
+        application/atom+xml
+        application/javascript
+        application/json
+        application/rss+xml
+        application/vnd.ms-fontobject
+        application/x-font-ttf
+        application/x-web-app-manifest+json
+        application/xhtml+xml
+        application/xml
+        font/opentype
+        image/svg+xml
+        image/x-icon
+        text/css
+        text/plain
+        text/x-component;
 }
 EOL
 
@@ -407,4 +515,25 @@ sudo journalctl -u fastapi -n 50
 
 # Check Nginx error logs
 sudo tail -f /var/log/nginx/error.log
+
+# Test Django static files
+curl -I https://pathfindersgifts.com/static/
+
+# Test Next.js static files
+curl -I https://pathfindersgifts.com/_next/static/
+
+# Test Django API
+curl -vI https://pathfindersgifts.com/api/
+
+# Test FastAPI endpoint
+curl -vI https://pathfindersgifts.com/api/fastapi/
+
+curl -I http://pathfindersgifts.com
+
+curl -I https://pathfindersgifts.com
+
+sudo truncate -s 0 /var/log/nginx/error.log
+sudo truncate -s 0 /var/log/nginx/access.log
+sudo journalctl --rotate
+sudo journalctl --vacuum-time=1s
 ```

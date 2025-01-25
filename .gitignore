@@ -57,7 +57,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -82,5 +81,7 @@ venv/
 
 # IDE
 .vscode/
-.idea/# Deployment
+.idea/
+
+# Deployment
 deployment.md
