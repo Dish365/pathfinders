@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   async headers() {
     return [
       {
@@ -35,6 +36,17 @@ const nextConfig = {
         ],
         permanent: true,
         destination: 'https://:path*'
+      }
+    ]
+  },
+  // Add basePath if you're not serving from root
+  // basePath: '',
+  // Add API proxy configuration
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:8000/api/:path*' // Update with your Django API URL
       }
     ]
   }

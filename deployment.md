@@ -263,13 +263,13 @@ upstream fastapi_backend {
 server {
     listen 80;
     server_name pathfindersgifts.com www.pathfindersgifts.com;
-    
+
     # Block WordPress probing attempts
     location ~* ^/wp-(admin|login|content|includes) {
         deny all;
         return 404;
     }
-    
+
     return 301 https://$server_name$request_uri;
 }
 
@@ -305,18 +305,12 @@ server {
 
     # Next.js static files
     location /_next/static/ {
-        alias /home/ubuntu/app/staticfiles/_next/static/;
+        alias /home/ubuntu/app/pathfinders-client/.next/static/;
         expires 30d;
         add_header Cache-Control "public, no-transform";
-        add_header Content-Type "application/javascript" always;
         try_files $uri $uri/ =404;
         access_log off;
         gzip_static on;
-        
-        # Disable unnecessary security headers for static content
-        add_header X-Frame-Options "" always;
-        add_header X-Content-Type-Options "" always;
-        add_header X-XSS-Protection "" always;
     }
 
     # Django static files
@@ -327,11 +321,6 @@ server {
         add_header Cache-Control "public, no-transform, must-revalidate, max-age=2592000";
         access_log off;
         gzip_static on;
-        
-        # Disable unnecessary security headers for static content
-        add_header X-Frame-Options "" always;
-        add_header X-Content-Type-Options "" always;
-        add_header X-XSS-Protection "" always;
     }
 
     # Media files

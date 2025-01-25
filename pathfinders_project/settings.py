@@ -101,18 +101,20 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CORS_ALLOWED_ORIGINS = [
     "https://pathfindersgifts.com",
     "https://www.pathfindersgifts.com",
+    "http://localhost:3000",  # For local development
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://pathfindersgifts.com',
-    'https://www.pathfindersgifts.com',
+    "https://pathfindersgifts.com",
+    "https://www.pathfindersgifts.com",
+    "http://localhost:3000",  # For local development
 ]
 
 CSRF_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_HTTPONLY = False  # Required for Next.js to access the cookie
 CSRF_COOKIE_SECURE = True
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_NAME = 'csrftoken'
@@ -125,7 +127,7 @@ SESSION_COOKIE_SECURE = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 FASTAPI_SETTINGS = {
-    'HOST': 'http://localhost:8000',
+    'HOST': 'http://localhost:8001',
     'ENDPOINTS': {
         'CALCULATE_GIFTS': '/calculate-gifts/',
         'SAVE_PROGRESS': '/progress/save/',
