@@ -27,7 +27,7 @@ app.add_middleware(
 )
 
 # Update the httpx client calls to use environment variables
-DJANGO_API_URL = os.getenv('DJANGO_API_URL', 'http://localhost:8000')
+DJANGO_API_URL = os.getenv('DJANGO_API_URL', 'https://pathfindersgifts.com')
 
 calculator = GiftCalculator()
 
@@ -113,7 +113,7 @@ async def get_progress(user_id: int):
     """
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"http://localhost:8000/api/assessments/get-progress/{user_id}/"
+            f"{DJANGO_API_URL}/api/assessments/get-progress/{user_id}/"
         )
         return response.json()
 

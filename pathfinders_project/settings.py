@@ -101,7 +101,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CORS_ALLOWED_ORIGINS = [
     "https://pathfindersgifts.com",
     "https://www.pathfindersgifts.com",
-    "http://localhost:3000",  # For local development
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -110,7 +109,6 @@ CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 CSRF_TRUSTED_ORIGINS = [
     "https://pathfindersgifts.com",
     "https://www.pathfindersgifts.com",
-    "http://localhost:3000",  # For local development
 ]
 
 CSRF_COOKIE_SAMESITE = 'Lax'
@@ -142,7 +140,7 @@ DATABASES['default']['TEST'] = {
     'NAME': 'test_pathfinders_db',
 }
 
-FASTAPI_URL = "http://localhost:8001"  # FastAPI will run on port 8001
+FASTAPI_URL = os.getenv('FASTAPI_URL', 'https://pathfindersgifts.com/api/fastapi')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
