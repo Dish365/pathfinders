@@ -41,12 +41,16 @@ const nextConfig = {
   },
   // Add basePath if you're not serving from root
   // basePath: '',
-  // Add API proxy configuration
+  // Update API proxy configuration
   async rewrites() {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:8000/api/:path*' // Update with your Django API URL
+        destination: 'http://localhost:8000/api/:path*'
+      },
+      {
+        source: '/api/fastapi/:path*',
+        destination: 'http://localhost:8001/api/fastapi/:path*'
       }
     ]
   }
