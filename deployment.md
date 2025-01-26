@@ -308,6 +308,15 @@ server {
         return 404;
     }
 
+    # Django static files
+    location /static/ {
+        alias /home/ubuntu/app/staticfiles/;
+        expires 30d;
+        add_header Cache-Control "public, no-transform";
+        access_log off;
+        gzip_static on;
+    }
+
     # Next.js static files
     location /_next/static/ {
         alias /home/ubuntu/app/pathfinders-client/.next/static/;

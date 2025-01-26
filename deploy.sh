@@ -46,6 +46,12 @@ if ! command -v $POETRY_PATH &> /dev/null; then
     curl -sSL https://install.python-poetry.org | python3 -
 fi
 
+# Create necessary directories
+log "Creating static directories..."
+mkdir -p $APP_DIR/static
+mkdir -p $APP_DIR/staticfiles
+mkdir -p $APP_DIR/media
+
 # Update Python dependencies
 log "Installing Python dependencies..."
 $POETRY_PATH install --only main
@@ -56,7 +62,14 @@ $POETRY_PATH run python manage.py migrate --noinput
 
 # Collect static files if needed
 log "Collecting static files..."
+export DJANGO_SETTINGS_MODULE=pathfinders_project.settings
 $POETRY_PATH run python manage.py collectstatic --noinput
+
+# Fix static files permissions
+log "Fixing static files permissions..."
+sudo chown -R ubuntu:ubuntu $APP_DIR/static
+sudo chown -R ubuntu:ubuntu $APP_DIR/staticfiles
+sudo chown -R ubuntu:ubuntu $APP_DIR/media
 
 # Frontend setup
 log "Setting up frontend..."
