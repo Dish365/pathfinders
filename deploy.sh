@@ -48,7 +48,7 @@ fi
 
 # Update Python dependencies
 log "Installing Python dependencies..."
-$POETRY_PATH install --no-dev
+$POETRY_PATH install --only main
 
 # Run migrations
 log "Running database migrations..."
