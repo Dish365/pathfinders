@@ -111,16 +111,19 @@ CSRF_TRUSTED_ORIGINS = [
     "https://www.pathfindersgifts.com",
 ]
 
+# Cookie settings for production
 CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_HTTPONLY = False  # Required for Next.js to access the cookie
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True  # Important for HTTPS
+CSRF_COOKIE_DOMAIN = '.pathfindersgifts.com'  # Add this line
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_NAME = 'csrftoken'
 
-# Add this setting to ensure session-based authentication works
+# Session settings
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True  # Important for HTTPS
+SESSION_COOKIE_DOMAIN = '.pathfindersgifts.com'  # Add this line
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

@@ -23,7 +23,10 @@ fastapi_application = FastAPI()
 # Add CORS middleware
 fastapi_application.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://pathfindersgifts.com"],
+    allow_origins=[
+        "https://pathfindersgifts.com",
+        "https://www.pathfindersgifts.com",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -32,9 +35,8 @@ fastapi_application.add_middleware(
 # Combined application
 async def application(scope, receive, send):
     if scope["type"] == "http":
-        # Route /api requests to FastAPI
-        if scope["path"].startswith("/api/"):
+        path = scope["path"]
+        if path.startswith("/api/fastapi/"):
             return await fastapi_application(scope, receive, send)
-        # Route all other requests to Django
         return await django_application(scope, receive, send)
     return await django_application(scope, receive, send)

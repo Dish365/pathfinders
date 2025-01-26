@@ -249,6 +249,11 @@ sudo apt install -y nginx certbot python3-certbot-nginx
 # Create initial Nginx configuration without SSL
 sudo tee /etc/nginx/conf.d/pathfinders.conf << 'EOL'
 # Upstream definitions for load balancing
+upstream nextjs_frontend {
+    server 127.0.0.1:3000;
+    keepalive 32;
+}
+
 upstream django_backend {
     server 127.0.0.1:8000;
     keepalive 32;
@@ -288,7 +293,7 @@ server {
     ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
     ssl_prefer_server_ciphers off;
 
-    # Security headers (unified and always applied)
+    # Security headers
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
     add_header X-Content-Type-Options "nosniff" always;
     add_header X-Frame-Options "SAMEORIGIN" always;
@@ -313,24 +318,13 @@ server {
         gzip_static on;
     }
 
-    # Django static files
-    location /static/ {
-        root /home/ubuntu/app/staticfiles;
-        try_files $uri $uri/ =404;
-        expires 30d;
-        add_header Cache-Control "public, no-transform, must-revalidate, max-age=2592000";
-        access_log off;
-        gzip_static on;
-    }
-
     # Media files
     location /media/ {
         alias /home/ubuntu/app/media/;
         try_files $uri $uri/ =404;
         expires 30d;
-        add_header Cache-Control "public, no-transform, must-revalidate, max-age=2592000";
+        add_header Cache-Control "public, no-transform";
         access_log off;
-        gzip_static on;
     }
 
     # FastAPI backend
@@ -343,12 +337,6 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering on;
-        proxy_buffer_size 8k;
-        proxy_buffers 8 8k;
-        proxy_connect_timeout 60s;
-        proxy_send_timeout 60s;
-        proxy_read_timeout 60s;
     }
 
     # Django backend API
@@ -361,12 +349,6 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering on;
-        proxy_buffer_size 8k;
-        proxy_buffers 8 8k;
-        proxy_connect_timeout 60s;
-        proxy_send_timeout 60s;
-        proxy_read_timeout 60s;
 
         # CORS headers for API
         add_header Access-Control-Allow-Origin $http_origin always;
@@ -391,21 +373,15 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering on;
-        proxy_buffer_size 8k;
-        proxy_buffers 8 8k;
-        proxy_connect_timeout 60s;
-        proxy_send_timeout 60s;
-        proxy_read_timeout 60s;
 
         # Additional security for admin
         allow 13.61.197.147;  # Your server IP
         deny all;
     }
 
-    # Root location - serve Next.js frontend through Django
+    # Everything else goes to Next.js
     location / {
-        proxy_pass http://django_backend;
+        proxy_pass http://nextjs_frontend;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
@@ -413,12 +389,8 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering on;
-        proxy_buffer_size 8k;
-        proxy_buffers 8 8k;
-        proxy_connect_timeout 60s;
-        proxy_send_timeout 60s;
-        proxy_read_timeout 60s;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
     }
 
     # Enable compression
@@ -426,25 +398,7 @@ server {
     gzip_vary on;
     gzip_proxied any;
     gzip_comp_level 6;
-    gzip_buffers 16 8k;
-    gzip_http_version 1.1;
-    gzip_min_length 256;
-    gzip_types
-        application/atom+xml
-        application/javascript
-        application/json
-        application/rss+xml
-        application/vnd.ms-fontobject
-        application/x-font-ttf
-        application/x-web-app-manifest+json
-        application/xhtml+xml
-        application/xml
-        font/opentype
-        image/svg+xml
-        image/x-icon
-        text/css
-        text/plain
-        text/x-component;
+    gzip_types text/plain text/css text/xml application/json application/javascript application/xml+rss application/atom+xml image/svg+xml;
 }
 EOL
 

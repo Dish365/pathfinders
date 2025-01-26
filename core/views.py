@@ -6,5 +6,7 @@ def health_check(request):
 
 @ensure_csrf_cookie
 def serve_frontend(request, path=""):
-    # Return 404 to let Next.js handle all frontend routes
-    return JsonResponse({"error": "Not found"}, status=404)
+    if request.path.startswith('/api/'):
+        return JsonResponse({"error": "API endpoint not found"}, status=404)
+    # Return 200 to let Next.js handle frontend routes
+    return JsonResponse({"status": "ok"})
