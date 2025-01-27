@@ -128,7 +128,7 @@ SESSION_COOKIE_DOMAIN = '.pathfindersgifts.com'  # Add this line
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 FASTAPI_SETTINGS = {
-    'HOST': 'http://localhost:8001',
+    'HOST': 'http://127.0.0.1:8001',
     'ENDPOINTS': {
         'CALCULATE_GIFTS': '/calculate-gifts/',
         'SAVE_PROGRESS': '/progress/save/',
@@ -143,7 +143,7 @@ DATABASES['default']['TEST'] = {
     'NAME': 'test_pathfinders_db',
 }
 
-FASTAPI_URL = os.getenv('FASTAPI_URL', 'https://pathfindersgifts.com/api/fastapi')
+FASTAPI_URL = 'http://127.0.0.1:8001'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

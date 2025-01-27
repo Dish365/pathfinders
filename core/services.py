@@ -5,36 +5,21 @@ import os
 
 class FastAPIClient:
     def __init__(self):
-        self.base_url = os.getenv('FASTAPI_URL', 'https://pathfindersgifts.com/api/fastapi')
-        self.timeout = 30.0  # Add timeout for production
+        # Use internal network URL since both services are on same server
+        self.base_url = os.getenv('FASTAPI_URL', 'http://127.0.0.1:8001')
+        self.timeout = 30.0
         
     def calculate_gifts_sync(self, data):
         """Synchronous request to FastAPI calculate-gifts endpoint"""
         with httpx.Client() as client:
             try:
                 response = client.post(
-                    self.base_url,
-                    json={
-                        'user_id': data.get('user_id'),
-                        'answers': [
-                            {
-                                'question_id': answer['question_id'],
-                                'answer': answer['answer'],
-                                'gift_correlation': answer['gift_correlation']
-                            }
-                            for answer in data['answers']
-                        ]
-                    }
+                    f"{self.base_url}/calculate-gifts/",  # Add endpoint path
+                    json=data,
+                    timeout=self.timeout
                 )
                 response.raise_for_status()
-                result = response.json()
-                
-                # Validate required fields in response
-                required_fields = ['scores', 'primary_gift', 'secondary_gifts', 'descriptions']
-                if not all(field in result for field in required_fields):
-                    raise ValueError("Invalid response format from gift calculation service")
-                    
-                return result
+                return response.json()
             except httpx.HTTPError as e:
                 raise ValueError(f"FastAPI calculation failed: {str(e)}")
 
