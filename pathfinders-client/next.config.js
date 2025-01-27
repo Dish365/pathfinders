@@ -46,11 +46,11 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:8000/api/:path*'
+        destination: 'https://pathfindersgifts.com/api/:path*'
       },
       {
         source: '/api/fastapi/:path*',
-        destination: 'http://localhost:8001/api/fastapi/:path*'
+        destination: 'https://pathfindersgifts.com/api/fastapi/:path*'
       }
     ]
   }

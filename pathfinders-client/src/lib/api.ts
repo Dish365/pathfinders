@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL || 'https://pathfindersgifts.com';
+const baseURL = 'https://pathfindersgifts.com';
 
 export const api = axios.create({
   baseURL,

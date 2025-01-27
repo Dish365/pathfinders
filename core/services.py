@@ -5,7 +5,7 @@ import os
 
 class FastAPIClient:
     def __init__(self):
-        self.base_url = os.getenv('FASTAPI_URL', 'http://localhost:8001')
+        self.base_url = os.getenv('FASTAPI_URL', 'https://pathfindersgifts.com/api/fastapi')
         self.timeout = 30.0  # Add timeout for production
         
     def calculate_gifts_sync(self, data):
