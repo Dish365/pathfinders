@@ -1,8 +1,10 @@
 import Link from 'next/link';
+import { TestComponent } from '@/components/test';
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-100 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-indigo-100 to-white p-4">
+      <TestComponent />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-indigo-900 sm:text-5xl md:text-6xl">

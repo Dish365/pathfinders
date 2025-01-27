@@ -1,6 +1,11 @@
-import { Providers } from './providers';
 import './globals.css';
+import { Providers } from './providers';
 import { Toaster } from 'sonner';
+
+export const metadata = {
+  title: 'Pathfinders',
+  description: 'Discover your motivational gifts',
+};
 
 export default function RootLayout({
   children,
