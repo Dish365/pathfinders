@@ -2,6 +2,9 @@ declare module 'sonner' {
   interface ToastOptions {
     position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'top-center' | 'bottom-center';
     duration?: number;
+    toastOptions?: {
+      style?: React.CSSProperties;
+    };
   }
 
   interface Toast {
