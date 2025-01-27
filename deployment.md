@@ -299,7 +299,7 @@ server {
     add_header X-Frame-Options "SAMEORIGIN" always;
     add_header X-XSS-Protection "1; mode=block" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-    add_header Cross-Origin-Opener-Policy "same-origin" always;
+    add_header Cross-Origin-Opener-Policy "same-origin" always;        
     add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
 
     # Block WordPress probing attempts
@@ -319,7 +319,7 @@ server {
 
     # Next.js static files
     location /_next/static/ {
-        alias /home/ubuntu/app/pathfinders-client/.next/static/;
+        alias /home/ubuntu/app/pathfinders-client/.next/static/;       
         expires 30d;
         add_header Cache-Control "public, no-transform";
         try_files $uri $uri/ =404;
@@ -344,8 +344,20 @@ server {
         proxy_set_header Connection "upgrade";
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;   
         proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Add CORS headers
+        add_header Access-Control-Allow-Origin $http_origin always;    
+        add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS, PATCH" always;
+        add_header Access-Control-Allow-Headers "Authorization, Content-Type, X-CSRFToken" always;
+        add_header Access-Control-Allow-Credentials "true" always;     
+        add_header Access-Control-Max-Age "3600" always;
+
+        # Handle OPTIONS method
+        if ($request_method = OPTIONS) {
+            return 204;
+        }
     }
 
     # Django backend API
@@ -356,14 +368,14 @@ server {
         proxy_set_header Connection "upgrade";
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;   
         proxy_set_header X-Forwarded-Proto $scheme;
 
         # CORS headers for API
-        add_header Access-Control-Allow-Origin $http_origin always;
+        add_header Access-Control-Allow-Origin $http_origin always;    
         add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS, PATCH" always;
         add_header Access-Control-Allow-Headers "Authorization, Content-Type, X-CSRFToken" always;
-        add_header Access-Control-Allow-Credentials "true" always;
+        add_header Access-Control-Allow-Credentials "true" always;     
         add_header Access-Control-Max-Age "3600" always;
 
         # Handle OPTIONS method for CORS preflight
@@ -380,7 +392,7 @@ server {
         proxy_set_header Connection "upgrade";
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;   
         proxy_set_header X-Forwarded-Proto $scheme;
 
         # Additional security for admin
@@ -396,7 +408,7 @@ server {
         proxy_set_header Connection "upgrade";
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;   
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Host $host;
         proxy_set_header X-Forwarded-Port $server_port;
@@ -407,7 +419,7 @@ server {
     gzip_vary on;
     gzip_proxied any;
     gzip_comp_level 6;
-    gzip_types text/plain text/css text/xml application/json application/javascript application/xml+rss application/atom+xml image/svg+xml;
+    gzip_types text/plain text/css text/xml application/json application/javascript application/xml+rss application/atom+xml image/svg+xml;   
 }
 EOL
 
