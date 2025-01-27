@@ -7,50 +7,59 @@ class BookAccessService:
     @staticmethod
     def grant_gift_based_access(user, gift_profile):
         """Grant book access based on primary and secondary gifts"""
-        # First, deactivate any existing book access
-        BookAccess.objects.filter(user=user).update(is_active=False)
-        
-        # Clean and standardize the gift names
-        def clean_gift_name(gift):
-            # Remove any parentheses content and strip whitespace
-            gift = gift.split('(')[0].strip().upper()
-            return gift
-        
-        # Get books for primary gift
-        primary_gift = clean_gift_name(gift_profile.primary_gift)
-        print(f"Debug - Looking for books with primary gift: {primary_gift}")
-        primary_books = Book.objects.filter(associated_gift=primary_gift)
-        
-        # Get books for secondary gifts
-        secondary_gifts = [clean_gift_name(gift) for gift in gift_profile.secondary_gifts]
-        print(f"Debug - Looking for books with secondary gifts: {secondary_gifts}")
-        secondary_books = Book.objects.filter(associated_gift__in=secondary_gifts)
-        
-        print(f"Debug - Found {primary_books.count()} primary books and {secondary_books.count()} secondary books")
-        
-        # Grant access to primary gift books
-        for book in primary_books:
-            BookAccess.objects.update_or_create(
-                user=user,
-                book=book,
-                defaults={
-                    'access_reason': 'PRIMARY',
-                    'is_active': True,
-                    'expires_at': timezone.now() + timedelta(days=365)
-                }
-            )
-        
-        # Grant access to secondary gift books
-        for book in secondary_books:
-            BookAccess.objects.update_or_create(
-                user=user,
-                book=book,
-                defaults={
-                    'access_reason': 'SECONDARY',
-                    'is_active': True,
-                    'expires_at': timezone.now() + timedelta(days=365)
-                }
-            )
+        try:
+            print(f"Debug - Starting grant_gift_based_access for user {user.id}")
+            print(f"Debug - Primary gift: {gift_profile.primary_gift}")
+            print(f"Debug - Secondary gifts: {gift_profile.secondary_gifts}")
+            
+            # First, deactivate any existing book access
+            BookAccess.objects.filter(user=user).update(is_active=False)
+            
+            # Clean and standardize the gift names
+            def clean_gift_name(gift):
+                gift = gift.split('(')[0].strip().upper()
+                print(f"Debug - Cleaned gift name: {gift}")
+                return gift
+            
+            primary_gift = clean_gift_name(gift_profile.primary_gift)
+            print(f"Debug - Looking for books with primary gift: {primary_gift}")
+            primary_books = Book.objects.filter(associated_gift=primary_gift)
+            print(f"Debug - Found {primary_books.count()} primary books")
+            
+            secondary_gifts = [clean_gift_name(gift) for gift in gift_profile.secondary_gifts]
+            print(f"Debug - Looking for books with secondary gifts: {secondary_gifts}")
+            secondary_books = Book.objects.filter(associated_gift__in=secondary_gifts)
+            print(f"Debug - Found {secondary_books.count()} secondary books")
+            
+            # Grant access and log each book
+            for book in primary_books:
+                print(f"Debug - Granting PRIMARY access to book: {book.title}")
+                BookAccess.objects.update_or_create(
+                    user=user,
+                    book=book,
+                    defaults={
+                        'access_reason': 'PRIMARY',
+                        'is_active': True,
+                        'expires_at': timezone.now() + timedelta(days=365)
+                    }
+                )
+            
+            for book in secondary_books:
+                print(f"Debug - Granting SECONDARY access to book: {book.title}")
+                BookAccess.objects.update_or_create(
+                    user=user,
+                    book=book,
+                    defaults={
+                        'access_reason': 'SECONDARY',
+                        'is_active': True,
+                        'expires_at': timezone.now() + timedelta(days=365)
+                    }
+                )
+            
+            print("Debug - Book access grant completed successfully")
+        except Exception as e:
+            print(f"Error in grant_gift_based_access: {str(e)}")
+            raise
 
     @staticmethod
     def get_accessible_books(user):

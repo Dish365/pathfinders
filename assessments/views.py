@@ -94,8 +94,10 @@ class AssessmentViewSet(viewsets.ModelViewSet):
                     results_data=results
                 )
 
-                # Create gift profile - Let's add debug logging
+                # Add debug logging before creating gift profile
+                print(f"Debug - Results from FastAPI: {results}")
                 print(f"Debug - Creating gift profile with primary: {results['primary_gift']}, secondary: {results['secondary_gifts']}")
+                
                 gift_profile = GiftProfile.objects.create(
                     user=request.user,
                     assessment=assessment,
@@ -104,9 +106,11 @@ class AssessmentViewSet(viewsets.ModelViewSet):
                     scores=results['scores']
                 )
 
-                # Add debug logging before granting access
-                print(f"Debug - Granting book access for primary: {gift_profile.primary_gift}, secondary: {gift_profile.secondary_gifts}")
+                # Add debug logging before granting book access
+                print(f"Debug - About to grant book access for user {request.user.id}")
+                print(f"Debug - Gift Profile ID: {gift_profile.id}")
                 BookAccessService.grant_gift_based_access(request.user, gift_profile)
+                print("Debug - Book access granted")
 
                 return Response(results, status=status.HTTP_200_OK)
 
