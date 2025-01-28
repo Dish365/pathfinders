@@ -100,8 +100,8 @@ export function CareerItem({ career, onBookmark }: CareerItemProps) {
                     </span>
                   ))}
                 </TooltipTrigger>
-                <TooltipContent className="bg-slate-800 text-white border-slate-700">
-                  <p>{description}</p>
+                <TooltipContent className="bg-white text-slate-900 border border-slate-200">
+                  <p className="text-sm font-medium">{description}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
