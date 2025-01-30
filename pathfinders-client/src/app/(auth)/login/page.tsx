@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/auth-context';
 import { Loading } from '@/components/ui/loading';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Sparkles, Users, ArrowRight } from 'lucide-react';
 
 export default function LoginPage() {
   const { user, loading } = useAuth();
@@ -19,36 +20,82 @@ export default function LoginPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-blue-50">
         <Loading size="large" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-xl shadow-lg">
-        <div className="text-center">
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">
-            Welcome back
+    <div className="min-h-screen flex bg-gradient-to-br from-indigo-50 via-white to-blue-50">
+      {/* Left side - Benefits */}
+      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-indigo-600 to-blue-700 
+        text-white p-12 flex-col justify-center">
+        <div className="max-w-lg mx-auto">
+          <h2 className="text-3xl font-bold mb-8">
+            Welcome Back to Your Journey
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Discover your motivational gifts and find your purpose
-          </p>
+          
+          <div className="space-y-8">
+            <div className="bg-white/10 rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <Sparkles className="w-6 h-6" />
+                <h3 className="text-xl font-semibold">Continue Your Discovery</h3>
+              </div>
+              <p className="text-indigo-100">
+                Pick up where you left off in your journey to understand and apply your 
+                motivational gifts.
+              </p>
+            </div>
+
+            <div className="bg-white/10 rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <Users className="w-6 h-6" />
+                <h3 className="text-xl font-semibold">Expert Support</h3>
+              </div>
+              <p className="text-indigo-100">
+                Access career counseling and guidance from professionals who understand both 
+                gifts and career paths.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-12 p-6 bg-white/10 rounded-xl">
+            <p className="text-lg font-medium mb-2">
+              "For as we have many members in one body, and all members have not the same office..."
+            </p>
+            <p className="text-indigo-200">Romans 12:4</p>
+          </div>
         </div>
+      </div>
 
-        <LoginForm />
+      {/* Right side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
+        <div className="max-w-md w-full">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Welcome Back
+            </h1>
+            <p className="text-lg text-gray-600">
+              Continue your journey of purpose discovery
+            </p>
+          </div>
 
-        <div className="text-center">
-          <p className="text-sm text-gray-600">
-            Don&apos;t have an account?{' '}
-            <Link
-              href="/register"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
-            >
-              Sign up
-            </Link>
-          </p>
+          <LoginForm />
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              New to Pathfinders?{' '}
+              <Link
+                href="/register"
+                className="font-medium text-indigo-600 hover:text-indigo-500 
+                  transition-colors duration-200 inline-flex items-center gap-1"
+              >
+                Start your journey
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
