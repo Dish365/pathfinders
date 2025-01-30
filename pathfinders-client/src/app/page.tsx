@@ -83,7 +83,7 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Features Section - New */}
+      {/* Features Section */}
       <div className="bg-indigo-50 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -99,19 +99,19 @@ export default function LandingPage() {
                   <div className="mt-1 bg-indigo-100 rounded-full p-1">
                     <Target className="w-4 h-4 text-indigo-600" />
                   </div>
-                  <span>Career matching based on your motivational gifts</span>
+                  <span className="text-gray-700">Career matching based on your motivational gifts</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="mt-1 bg-indigo-100 rounded-full p-1">
                     <Users className="w-4 h-4 text-indigo-600" />
                   </div>
-                  <span>Professional career counseling support</span>
+                  <span className="text-gray-700">Professional career counseling support</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="mt-1 bg-indigo-100 rounded-full p-1">
                     <BookOpen className="w-4 h-4 text-indigo-600" />
                   </div>
-                  <span>Career transition guidance and resources</span>
+                  <span className="text-gray-700">Career transition guidance and resources</span>
                 </li>
               </ul>
             </div>
@@ -122,19 +122,19 @@ export default function LandingPage() {
                   <div className="mt-1 bg-indigo-100 rounded-full p-1">
                     <Gift className="w-4 h-4 text-indigo-600" />
                   </div>
-                  <span>Understanding your role in ministry through your gifts</span>
+                  <span className="text-gray-700">Understanding your role in ministry through your gifts</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="mt-1 bg-indigo-100 rounded-full p-1">
                     <Sparkles className="w-4 h-4 text-indigo-600" />
                   </div>
-                  <span>Ministry placement recommendations</span>
+                  <span className="text-gray-700">Ministry placement recommendations</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="mt-1 bg-indigo-100 rounded-full p-1">
                     <Target className="w-4 h-4 text-indigo-600" />
                   </div>
-                  <span>Personal development path for ministry effectiveness</span>
+                  <span className="text-gray-700">Personal development path for ministry effectiveness</span>
                 </li>
               </ul>
             </div>
