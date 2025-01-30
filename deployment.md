@@ -77,38 +77,7 @@ cd /home/ubuntu/app
 mkdir -p /home/ubuntu/app/static
 mkdir -p /home/ubuntu/app/staticfiles
 
-# Create and configure environment file
-cat > .env << EOL
-DB_USER=pathfinders_db
-DB_PASSWORD=vYqzB@MiguJR8k6
-DB_HOST=pathfinders.c3oqsqcmizjz.eu-north-1.rds.amazonaws.com
-DB_NAME=pathfinders
-DB_PORT=5432
-DEBUG=False
-ALLOWED_HOSTS=pathfindersgifts.com,www.pathfindersgifts.com,13.61.197.147
-FASTAPI_URL=http://localhost:8001
-DJANGO_API_URL=http://localhost:8000
-EOL
 
-# Verify RDS connection
-nc -zv pathfinders.c3oqsqcmizjz.eu-north-1.rds.amazonaws.com 5432
-
-# Set up database using master credentials from AWS Secrets Manager
-PGPASSWORD='N~4$IZcef0Sf!jEILxv?$bRTiMp_' psql "sslmode=require host=pathfinders.c3oqsqcmizjz.eu-north-1.rds.amazonaws.com port=5432 dbname=postgres user=postgres" << EOL
-CREATE DATABASE pathfinders;
-CREATE USER pathfinders_db WITH PASSWORD 'vYqzB@MiguJR8k6';
-GRANT ALL PRIVILEGES ON DATABASE pathfinders TO pathfinders_db;
-EOL
-
-# Connect to the pathfinders database and grant schema permissions
-PGPASSWORD='N~4$IZcef0Sf!jEILxv?$bRTiMp_' psql "sslmode=require host=pathfinders.c3oqsqcmizjz.eu-north-1.rds.amazonaws.com port=5432 dbname=pathfinders user=postgres" << EOL
-GRANT ALL ON SCHEMA public TO pathfinders_db;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO pathfinders_db;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO pathfinders_db;
-EOL
-
-# Verify connection with application user
-PGPASSWORD=vYqzB@MiguJR8k6 psql "sslmode=require host=pathfinders.c3oqsqcmizjz.eu-north-1.rds.amazonaws.com port=5432 dbname=pathfinders user=pathfinders_db" -c "\conninfo"
 ```
 
 ### System Dependencies
