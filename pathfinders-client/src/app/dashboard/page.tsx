@@ -21,6 +21,10 @@ export default function DashboardPage() {
 
   if (!user) return null;
 
+  // Check if user has completed an assessment
+  const hasCompletedAssessment = user.assessment_count > 0 && 
+    user.latest_assessment?.is_complete;
+
   return (
     <div className="p-8 space-y-8 max-w-7xl mx-auto">
       <div className="flex justify-between items-center">
@@ -60,22 +64,24 @@ export default function DashboardPage() {
           </div>
         </Card>
 
-        {user.profile.gift_summary ? (
+        {hasCompletedAssessment && user.profile.gift_summary && (
           <Card className="p-6 bg-white shadow-lg rounded-xl border border-slate-200/50">
             <h2 className="text-xl font-semibold text-slate-900 mb-6">Your Motivational Gifts</h2>
             <GiftSummary giftSummary={user.profile.gift_summary} />
           </Card>
-        ) : null}
+        )}
       </div>
 
-      {user.profile.recommended_roles ? (
-        <Card className="p-6 bg-white shadow-lg rounded-xl border border-slate-200/50">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-slate-900">Ministry Areas</h2>
-            <p className="text-sm text-slate-500">Based on Romans 12:6-8</p>
-          </div>
-          <RecommendedRoles />
-        </Card>
+      {hasCompletedAssessment ? (
+        user.profile.recommended_roles && (
+          <Card className="p-6 bg-white shadow-lg rounded-xl border border-slate-200/50">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-slate-900">Ministry Areas</h2>
+              <p className="text-sm text-slate-500">Based on Romans 12:6-8</p>
+            </div>
+            <RecommendedRoles />
+          </Card>
+        )
       ) : (
         <Card className="p-8 bg-white shadow-lg rounded-xl border border-slate-200/50 text-center">
           <div className="max-w-2xl mx-auto">
