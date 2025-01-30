@@ -1,25 +1,19 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const publicPaths = ['/login', '/register', '/forgot-password'];
+const publicPaths = ['/', '/login', '/register', '/forgot-password'];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isAuthPage = publicPaths.includes(pathname);
+  
+  // Allow access to landing page and other public paths
+  if (publicPaths.includes(pathname)) {
+    return NextResponse.next();
+  }
 
   // Check for authentication cookie
   const sessionCookie = request.cookies.get('sessionid');
   const isAuthenticated = !!sessionCookie;
-
-  // Redirect authenticated users away from auth pages
-  if (isAuthPage && isAuthenticated) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
-  }
-
-  // Allow public paths
-  if (isAuthPage) {
-    return NextResponse.next();
-  }
 
   // Check auth for protected routes
   if (!isAuthenticated) {
@@ -34,6 +28,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    // Match all paths except static files and api routes
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 }; 
